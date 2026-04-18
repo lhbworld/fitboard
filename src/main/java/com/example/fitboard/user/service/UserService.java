@@ -1,5 +1,6 @@
 package com.example.fitboard.user.service;
 
+import com.example.fitboard.user.dto.LoginRequest;
 import com.example.fitboard.user.dto.SignupRequest;
 import com.example.fitboard.user.entity.User;
 import com.example.fitboard.user.repository.UserRepository;
@@ -34,6 +35,15 @@ public class UserService {
         );
 
         userRepository.save(user);
+    }
+
+    public void login(LoginRequest request) {
+        User user = userRepository.findByLoginId(request.getLoginId())
+                .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
     }
 
     private void validateDuplicateLoginId(String loginId) {

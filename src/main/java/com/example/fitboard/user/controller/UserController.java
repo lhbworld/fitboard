@@ -1,6 +1,7 @@
 package com.example.fitboard.user.controller;
 
 import com.example.fitboard.user.dto.SignupRequest;
+import com.example.fitboard.user.dto.LoginRequest;
 import com.example.fitboard.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,5 +23,11 @@ public class UserController {
     public ResponseEntity<Map<String, String>> signup(@Valid @RequestBody SignupRequest request) {
         userService.signup(request);
         return ResponseEntity.ok(Map.of("message", "회원가입 성공"));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
+        userService.login(request);
+        return ResponseEntity.ok(Map.of("message", "로그인 성공"));
     }
 }
