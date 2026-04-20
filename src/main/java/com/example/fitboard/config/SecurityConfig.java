@@ -20,7 +20,8 @@ public class SecurityConfig {
                                 "/error",
                                 "/api/users/signup",
                                 "/api/users/login",
-                                "/api/boards/**"
+                                "/api/boards/**",
+                                "/api/comments/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );
