@@ -49,8 +49,11 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Map<String, String>> deleteBoard(@PathVariable Long boardId) {
-        boardService.deleteBoard(boardId);
+    public ResponseEntity<Map<String, String>> deleteBoard(
+            @PathVariable Long boardId,
+            @RequestParam Long userId
+    ) {
+        boardService.deleteBoard(boardId, userId);
         return ResponseEntity.ok(Map.of("message", "게시글 삭제 성공"));
     }
 }

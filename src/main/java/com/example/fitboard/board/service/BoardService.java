@@ -62,6 +62,8 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
+        validateBoardOwner(board, request.getUserId(), "작성자만 수정할 수 있습니다.");
+
         board.update(
                 request.getTitle(),
                 request.getContent(),
@@ -72,10 +74,18 @@ public class BoardService {
     }
 
     @Transactional
-    public void deleteBoard(Long boardId) {
+    public void deleteBoard(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
+        validateBoardOwner(board, userId, "작성자만 삭제할 수 있습니다.");
+
         boardRepository.delete(board);
+    }
+
+    private void validateBoardOwner(Board board, Long userId, String message) {
+        if (!board.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException(message);
+        }
     }
 }

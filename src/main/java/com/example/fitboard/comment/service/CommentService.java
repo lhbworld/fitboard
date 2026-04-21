@@ -63,16 +63,26 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
+        validateCommentOwner(comment, request.getUserId(), "작성자만 수정할 수 있습니다.");
+
         comment.update(request.getContent());
 
         return new CommentResponse(comment);
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
+        validateCommentOwner(comment, userId, "작성자만 삭제할 수 있습니다.");
+
         commentRepository.delete(comment);
+    }
+
+    private void validateCommentOwner(Comment comment, Long userId, String message) {
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException(message);
+        }
     }
 }
