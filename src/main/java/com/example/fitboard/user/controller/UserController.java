@@ -1,7 +1,8 @@
 package com.example.fitboard.user.controller;
 
-import com.example.fitboard.user.dto.SignupRequest;
 import com.example.fitboard.user.dto.LoginRequest;
+import com.example.fitboard.user.dto.LoginResponse;
+import com.example.fitboard.user.dto.SignupRequest;
 import com.example.fitboard.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
-        userService.login(request);
-        return ResponseEntity.ok(Map.of("message", "로그인 성공"));
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

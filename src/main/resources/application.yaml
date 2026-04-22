@@ -18,3 +18,7 @@ spring:
 
 server:
   port: 8081
+
+jwt:
+  secret: fitboard-jwt-secret-key-2026-for-access-token-dev
+  expiration-ms: 3600000
