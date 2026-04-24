@@ -1,6 +1,7 @@
 package com.example.fitboard.global.jwt;
 
 import com.example.fitboard.user.entity.User;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,5 +36,28 @@ public class JwtTokenProvider {
                 .expiration(new Date(now + expirationMs))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public boolean validateToken(String token) { // 토큰이 정상인지 확인
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public Long getUserId(String token) { // 토큰 안에서 회원 id 꺼내기
+        String subject = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+
+        return Long.parseLong(subject);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.fitboard.global.jwt.JwtTokenProvider;
 import com.example.fitboard.user.dto.LoginResponse;
+import com.example.fitboard.user.dto.MyInfoResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -66,5 +67,12 @@ public class UserService {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
+    }
+
+    public MyInfoResponse getMyInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        return new MyInfoResponse(user);
     }
 }

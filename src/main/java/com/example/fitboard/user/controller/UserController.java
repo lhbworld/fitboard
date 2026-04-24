@@ -7,7 +7,8 @@ import com.example.fitboard.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.fitboard.user.dto.MyInfoResponse;
+import org.springframework.security.core.Authentication;
 import java.util.Map;
 
 @RestController
@@ -29,6 +30,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MyInfoResponse> getMyInfo(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        MyInfoResponse response = userService.getMyInfo(userId);
         return ResponseEntity.ok(response);
     }
 }
