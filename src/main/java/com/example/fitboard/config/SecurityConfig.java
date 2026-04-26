@@ -3,6 +3,7 @@ package com.example.fitboard.config;
 import com.example.fitboard.global.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,7 +37,9 @@ public class SecurityConfig {
                                 "/api/users/signup",
                                 "/api/users/login"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/boards/**", "/api/comments/**").permitAll()
                         .requestMatchers("/api/users/me").authenticated()
+                        .requestMatchers("/api/boards/**", "/api/comments/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

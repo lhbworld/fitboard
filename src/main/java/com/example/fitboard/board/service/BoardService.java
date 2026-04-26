@@ -25,8 +25,8 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponse createBoard(BoardCreateRequest request) {
-        User user = userRepository.findById(request.getUserId())
+    public BoardResponse createBoard(Long userId, BoardCreateRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Board board = new Board(
@@ -58,11 +58,11 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponse updateBoard(Long boardId, BoardUpdateRequest request) {
+    public BoardResponse updateBoard(Long boardId, Long userId, BoardUpdateRequest request) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        validateBoardOwner(board, request.getUserId(), "작성자만 수정할 수 있습니다.");
+        validateBoardOwner(board, userId, "작성자만 수정할 수 있습니다.");
 
         board.update(
                 request.getTitle(),

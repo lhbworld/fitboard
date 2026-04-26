@@ -31,8 +31,8 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse createComment(Long boardId, CommentCreateRequest request) {
-        User user = userRepository.findById(request.getUserId())
+    public CommentResponse createComment(Long boardId, Long userId, CommentCreateRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Board board = boardRepository.findById(boardId)
@@ -59,11 +59,11 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse updateComment(Long commentId, CommentUpdateRequest request) {
+    public CommentResponse updateComment(Long commentId, Long userId, CommentUpdateRequest request) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
-        validateCommentOwner(comment, request.getUserId(), "작성자만 수정할 수 있습니다.");
+        validateCommentOwner(comment, userId, "작성자만 수정할 수 있습니다.");
 
         comment.update(request.getContent());
 

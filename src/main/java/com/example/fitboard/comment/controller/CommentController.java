@@ -7,6 +7,7 @@ import com.example.fitboard.comment.service.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,11 @@ public class CommentController {
     @PostMapping("/boards/{boardId}/comments")
     public ResponseEntity<CommentResponse> createComment(
             @PathVariable Long boardId,
-            @Valid @RequestBody CommentCreateRequest request
+            @Valid @RequestBody CommentCreateRequest request,
+            Authentication authentication
     ) {
-        CommentResponse response = commentService.createComment(boardId, request);
+        Long userId = Long.parseLong(authentication.getName());
+        CommentResponse response = commentService.createComment(boardId, userId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -39,17 +42,20 @@ public class CommentController {
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(
             @PathVariable Long commentId,
-            @Valid @RequestBody CommentUpdateRequest request
+            @Valid @RequestBody CommentUpdateRequest request,
+            Authentication authentication
     ) {
-        CommentResponse response = commentService.updateComment(commentId, request);
+        Long userId = Long.parseLong(authentication.getName());
+        CommentResponse response = commentService.updateComment(commentId, userId, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Map<String, String>> deleteComment(
             @PathVariable Long commentId,
-            @RequestParam Long userId
+            Authentication authentication
     ) {
+        Long userId = Long.parseLong(authentication.getName());
         commentService.deleteComment(commentId, userId);
         return ResponseEntity.ok(Map.of("message", "댓글 삭제 성공"));
     }

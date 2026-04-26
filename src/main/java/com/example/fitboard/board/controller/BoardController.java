@@ -7,6 +7,7 @@ import com.example.fitboard.board.service.BoardService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,12 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BoardResponse> createBoard(@Valid @RequestBody BoardCreateRequest request) {
-        BoardResponse response = boardService.createBoard(request);
+    public ResponseEntity<BoardResponse> createBoard(
+            @Valid @RequestBody BoardCreateRequest request,
+            Authentication authentication
+    ) {
+        Long userId = Long.parseLong(authentication.getName());
+        BoardResponse response = boardService.createBoard(userId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -42,17 +47,20 @@ public class BoardController {
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(
             @PathVariable Long boardId,
-            @Valid @RequestBody BoardUpdateRequest request
+            @Valid @RequestBody BoardUpdateRequest request,
+            Authentication authentication
     ) {
-        BoardResponse response = boardService.updateBoard(boardId, request);
+        Long userId = Long.parseLong(authentication.getName());
+        BoardResponse response = boardService.updateBoard(boardId, userId, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{boardId}")
     public ResponseEntity<Map<String, String>> deleteBoard(
             @PathVariable Long boardId,
-            @RequestParam Long userId
+            Authentication authentication
     ) {
+        Long userId = Long.parseLong(authentication.getName());
         boardService.deleteBoard(boardId, userId);
         return ResponseEntity.ok(Map.of("message", "게시글 삭제 성공"));
     }
