@@ -1,0 +1,135 @@
+.board-page {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding: 32px 24px 60px;
+}
+
+.board-header {
+  max-width: 1100px;
+  margin: 0 auto 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board-logo {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #111827;
+}
+
+.board-subtitle {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.board-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.board-user {
+  font-size: 14px;
+  color: #374151;
+}
+
+.board-logout-button {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.board-main {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.board-top-section {
+  margin-bottom: 20px;
+}
+
+.board-section-title {
+  margin: 0 0 8px;
+  font-size: 26px;
+  color: #111827;
+}
+
+.board-section-desc {
+  margin: 0;
+  color: #6b7280;
+}
+
+.board-message {
+  margin-bottom: 16px;
+  color: #dc2626;
+}
+
+.board-list {
+  display: grid;
+  gap: 16px;
+}
+
+.board-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.board-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.board-category {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #e0f7ff;
+  color: #0891b2;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.board-date {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.board-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #111827;
+}
+
+.board-content {
+  margin: 0 0 16px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.board-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.board-empty {
+  padding: 40px 20px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  color: #6b7280;
+}

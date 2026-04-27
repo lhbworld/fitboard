@@ -1,0 +1,101 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
+import "./BoardListPage.css";
+
+function BoardListPage() {
+  const [boards, setBoards] = useState([]);
+  const [myInfo, setMyInfo] = useState(null);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+
+        if (!accessToken) {
+          navigate("/login");
+          return;
+        }
+
+        const meResponse = await api.get("/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        setMyInfo(meResponse.data);
+
+        const boardResponse = await api.get("/api/boards");
+        setBoards(boardResponse.data);
+      } catch (error) {
+        console.error(error);
+        setMessage("게시글 목록을 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
+  return (
+    <div className="board-page">
+      <header className="board-header">
+        <div>
+          <h1 className="board-logo">fitboard</h1>
+          <p className="board-subtitle">운동 정보 공유 커뮤니티</p>
+        </div>
+
+        <div className="board-header-right">
+          {myInfo && <span className="board-user">{myInfo.nickname}님</span>}
+          <button className="board-logout-button" onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
+      </header>
+
+      <main className="board-main">
+        <section className="board-top-section">
+          <h2 className="board-section-title">게시글 목록</h2>
+          <p className="board-section-desc">
+            운동 루틴, 식단, 질문, 기록을 자유롭게 공유해보십시오.
+          </p>
+        </section>
+
+        {message && <p className="board-message">{message}</p>}
+
+        <section className="board-list">
+          {boards.length === 0 ? (
+            <div className="board-empty">아직 게시글이 없습니다.</div>
+          ) : (
+            boards.map((board) => (
+              <article className="board-card" key={board.id}>
+                <div className="board-card-top">
+                  <span className="board-category">{board.category}</span>
+                  <span className="board-date">
+                    {String(board.createdAt).replace("T", " ").slice(0, 16)}
+                  </span>
+                </div>
+
+                <h3 className="board-title">{board.title}</h3>
+                <p className="board-content">{board.content}</p>
+
+                <div className="board-meta">
+                  <span>작성자 {board.nickname}</span>
+                  <span>조회수 {board.viewCount}</span>
+                </div>
+              </article>
+            ))
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default BoardListPage;
