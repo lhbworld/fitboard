@@ -1,0 +1,94 @@
+.edit-page {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding: 32px 24px 60px;
+}
+
+.edit-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.edit-back-button {
+  margin-bottom: 20px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.edit-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.edit-title {
+  margin: 0 0 8px;
+  font-size: 30px;
+  color: #111827;
+}
+
+.edit-subtitle {
+  margin: 0 0 24px;
+  color: #6b7280;
+}
+
+.edit-form-group {
+  margin-bottom: 18px;
+}
+
+.edit-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.edit-input,
+.edit-select,
+.edit-textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 14px;
+  outline: none;
+  font: inherit;
+}
+
+.edit-input:focus,
+.edit-select:focus,
+.edit-textarea:focus {
+  border-color: #35c5f0;
+}
+
+.edit-textarea {
+  min-height: 260px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.edit-submit-button {
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 12px;
+  background: #35c5f0;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-submit-button:hover {
+  opacity: 0.95;
+}
+
+.edit-message {
+  margin-top: 16px;
+  color: #374151;
+}

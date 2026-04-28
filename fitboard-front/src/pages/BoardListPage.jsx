@@ -61,10 +61,21 @@ function BoardListPage() {
 
       <main className="board-main">
         <section className="board-top-section">
-          <h2 className="board-section-title">게시글 목록</h2>
-          <p className="board-section-desc">
-            운동 루틴, 식단, 질문, 기록을 자유롭게 공유해보십시오.
-          </p>
+          <div className="board-top-row">
+            <div>
+              <h2 className="board-section-title">게시글 목록</h2>
+              <p className="board-section-desc">
+                운동 루틴, 식단, 질문, 기록을 자유롭게 공유해보십시오.
+              </p>
+            </div>
+
+            <button
+              className="board-write-button"
+              onClick={() => navigate("/boards/new")}
+            >
+              글쓰기
+            </button>
+          </div>
         </section>
 
         {message && <p className="board-message">{message}</p>}
@@ -74,7 +85,12 @@ function BoardListPage() {
             <div className="board-empty">아직 게시글이 없습니다.</div>
           ) : (
             boards.map((board) => (
-              <article className="board-card" key={board.id}>
+              <article
+                className="board-card"
+                key={board.id}
+                onClick={() => navigate(`/boards/${board.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className="board-card-top">
                   <span className="board-category">{board.category}</span>
                   <span className="board-date">

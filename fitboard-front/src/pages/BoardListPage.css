@@ -133,3 +133,25 @@
   border-radius: 18px;
   color: #6b7280;
 }
+
+.board-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.board-write-button {
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: #35c5f0;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.board-write-button:hover {
+  opacity: 0.95;
+}
