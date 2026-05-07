@@ -254,3 +254,9 @@
 .detail-message {
   color: #dc2626;
 }
+
+.detail-page {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding-bottom: 60px;
+}

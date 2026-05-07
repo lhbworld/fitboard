@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import "./BoardDetailPage.css";
+import Header from "../components/Header";
 
 function BoardDetailPage() {
   const { boardId } = useParams();
@@ -220,7 +221,8 @@ function BoardDetailPage() {
 
   if (!board) {
     return (
-      <div className="detail-page">
+       <div className="detail-page">
+         <Header myInfo={myInfo} />
         <div className="detail-container">
           <button
             className="detail-back-button"
@@ -243,6 +245,7 @@ function BoardDetailPage() {
 
   return (
     <div className="detail-page">
+      <Header myInfo={myInfo} />
       <div className="detail-container">
         <button
           className="detail-back-button"

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "./BoardListPage.css";
+import Header from "../components/Header";
 
 function BoardListPage() {
   const [boards, setBoards] = useState([]);
@@ -45,19 +46,7 @@ function BoardListPage() {
 
   return (
     <div className="board-page">
-      <header className="board-header">
-        <div>
-          <h1 className="board-logo">fitboard</h1>
-          <p className="board-subtitle">운동 정보 공유 커뮤니티</p>
-        </div>
-
-        <div className="board-header-right">
-          {myInfo && <span className="board-user">{myInfo.nickname}님</span>}
-          <button className="board-logout-button" onClick={handleLogout}>
-            로그아웃
-          </button>
-        </div>
-      </header>
+      <Header myInfo={myInfo} />
 
       <main className="board-main">
         <section className="board-top-section">

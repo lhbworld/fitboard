@@ -1,0 +1,59 @@
+.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 18px 24px;
+}
+
+.app-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-logo-wrap {
+  cursor: pointer;
+}
+
+.app-logo {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #111827;
+}
+
+.app-subtitle {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-user {
+  font-size: 14px;
+  color: #374151;
+}
+
+.app-login-button,
+.app-logout-button {
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: #35c5f0;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.app-login-button:hover,
+.app-logout-button:hover {
+  opacity: 0.95;
+}

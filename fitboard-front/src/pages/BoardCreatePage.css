@@ -92,3 +92,9 @@
   margin-top: 16px;
   color: #374151;
 }
+
+.create-page {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding-bottom: 60px;
+}

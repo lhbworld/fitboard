@@ -1,15 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import Header from "../components/Header";
 import "./BoardCreatePage.css";
 
 function BoardCreatePage() {
   const navigate = useNavigate();
 
+  const [myInfo, setMyInfo] = useState(null);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("헬스");
   const [content, setContent] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchMyInfo = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+
+        if (!accessToken) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await api.get("/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        setMyInfo(response.data);
+      } catch (error) {
+        console.error(error);
+        navigate("/login");
+      }
+    };
+
+    fetchMyInfo();
+  }, [navigate]);
 
   const handleSubmit = async () => {
     try {
@@ -35,7 +63,6 @@ function BoardCreatePage() {
         }
       );
 
-      setMessage("게시글이 등록되었습니다.");
       navigate(`/boards/${response.data.id}`);
     } catch (error) {
       console.error(error);
@@ -51,6 +78,8 @@ function BoardCreatePage() {
 
   return (
     <div className="create-page">
+      <Header myInfo={myInfo} />
+
       <div className="create-container">
         <button
           className="create-back-button"

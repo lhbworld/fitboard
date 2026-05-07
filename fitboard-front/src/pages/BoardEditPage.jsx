@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
+import Header from "../components/Header";
 import "./BoardEditPage.css";
 
 function BoardEditPage() {
   const { boardId } = useParams();
   const navigate = useNavigate();
 
+  const [myInfo, setMyInfo] = useState(null);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("헬스");
   const [content, setContent] = useState("");
@@ -14,10 +16,24 @@ function BoardEditPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBoard = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get(`/api/boards/${boardId}`);
-        const board = response.data;
+        const accessToken = localStorage.getItem("accessToken");
+
+        if (!accessToken) {
+          navigate("/login");
+          return;
+        }
+
+        const meResponse = await api.get("/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setMyInfo(meResponse.data);
+
+        const boardResponse = await api.get(`/api/boards/${boardId}`);
+        const board = boardResponse.data;
 
         setTitle(board.title || "");
         setCategory(board.category || "헬스");
@@ -30,8 +46,8 @@ function BoardEditPage() {
       }
     };
 
-    fetchBoard();
-  }, [boardId]);
+    fetchData();
+  }, [boardId, navigate]);
 
   const handleSubmit = async () => {
     try {
@@ -72,6 +88,7 @@ function BoardEditPage() {
   if (loading) {
     return (
       <div className="edit-page">
+        <Header myInfo={myInfo} />
         <div className="edit-container">
           <p>불러오는 중...</p>
         </div>
@@ -81,6 +98,8 @@ function BoardEditPage() {
 
   return (
     <div className="edit-page">
+      <Header myInfo={myInfo} />
+
       <div className="edit-container">
         <button
           className="edit-back-button"
