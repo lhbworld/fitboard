@@ -42,7 +42,8 @@
 }
 
 .app-login-button,
-.app-logout-button {
+.app-logout-button,
+.app-mypage-button {
   height: 40px;
   padding: 0 16px;
   border: none;
@@ -54,6 +55,11 @@
 }
 
 .app-login-button:hover,
-.app-logout-button:hover {
+.app-logout-button:hover,
+.app-mypage-button:hover {
   opacity: 0.95;
+}
+
+.app-logout-button {
+  background: #ef4444;
 }

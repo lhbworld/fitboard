@@ -20,11 +20,17 @@ function Header({ myInfo }) {
         <div className="app-header-right">
           {myInfo ? (
             <>
-              <span className="app-user">{myInfo.nickname}님</span>
-              <button className="app-logout-button" onClick={handleLogout}>
-                로그아웃
-              </button>
-            </>
+  <span className="app-user">{myInfo.nickname}님</span>
+  <button
+    className="app-mypage-button"
+    onClick={() => navigate("/mypage")}
+  >
+    마이페이지
+  </button>
+  <button className="app-logout-button" onClick={handleLogout}>
+    로그아웃
+  </button>
+</>
           ) : (
             <button
               className="app-login-button"

@@ -4,6 +4,7 @@ import BoardListPage from "./pages/BoardListPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardCreatePage from "./pages/BoardCreatePage";
 import BoardEditPage from "./pages/BoardEditPage";
+import MyPage from "./pages/MyPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -28,6 +29,15 @@ function App() {
         element={
           <ProtectedRoute>
             <BoardEditPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/mypage"
+        element={
+          <ProtectedRoute>
+            <MyPage />
           </ProtectedRoute>
         }
       />
