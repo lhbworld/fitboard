@@ -11,6 +11,8 @@ import com.example.fitboard.user.entity.User;
 import com.example.fitboard.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.fitboard.comment.dto.MyCommentResponse;
+import java.util.List;
 
 import java.util.List;
 
@@ -55,6 +57,13 @@ public class CommentService {
         return commentRepository.findByBoardIdOrderByCreatedAtAsc(boardId)
                 .stream()
                 .map(CommentResponse::new)
+                .toList();
+    }
+
+    public List<MyCommentResponse> getMyComments(Long userId) {
+        return commentRepository.findByUser_IdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(MyCommentResponse::new)
                 .toList();
     }
 

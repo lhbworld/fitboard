@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import com.example.fitboard.comment.dto.MyCommentResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -58,5 +59,11 @@ public class CommentController {
         Long userId = Long.parseLong(authentication.getName());
         commentService.deleteComment(commentId, userId);
         return ResponseEntity.ok(Map.of("message", "댓글 삭제 성공"));
+    }
+
+    @GetMapping("/comments/me")
+    public ResponseEntity<List<MyCommentResponse>> getMyComments(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(commentService.getMyComments(userId));
     }
 }

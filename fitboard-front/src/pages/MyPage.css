@@ -71,27 +71,56 @@
   background: #fbfdff;
 }
 
-.mypage-board-list {
+.mypage-tab-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.mypage-tab {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-tab.active {
+  background: #35c5f0;
+  border-color: #35c5f0;
+  color: #ffffff;
+}
+
+.mypage-board-list,
+.mypage-comment-list {
   display: grid;
   gap: 14px;
 }
 
-.mypage-board-card {
+.mypage-board-card,
+.mypage-comment-card {
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   padding: 18px;
   background: #fbfdff;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-.mypage-board-card:hover {
+.mypage-board-card:hover,
+.mypage-comment-card:hover {
   background: #f8fbff;
 }
 
-.mypage-board-card-top {
+.mypage-board-card-top,
+.mypage-comment-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
@@ -108,6 +137,7 @@
 .mypage-date {
   font-size: 13px;
   color: #9ca3af;
+  white-space: nowrap;
 }
 
 .mypage-board-card-title {
@@ -116,7 +146,8 @@
   color: #111827;
 }
 
-.mypage-board-card-content {
+.mypage-board-card-content,
+.mypage-comment-content {
   margin: 0 0 12px;
   color: #4b5563;
   line-height: 1.6;
@@ -125,4 +156,9 @@
 .mypage-board-meta {
   font-size: 14px;
   color: #6b7280;
+}
+
+.mypage-comment-board {
+  font-weight: 700;
+  color: #111827;
 }
