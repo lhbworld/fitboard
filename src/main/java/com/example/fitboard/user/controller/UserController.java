@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.fitboard.user.dto.MyInfoResponse;
 import org.springframework.security.core.Authentication;
 import java.util.Map;
+import com.example.fitboard.user.dto.UserUpdateRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -38,5 +39,14 @@ public class UserController {
         Long userId = Long.parseLong(authentication.getName());
         MyInfoResponse response = userService.getMyInfo(userId);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<MyInfoResponse> updateMyInfo(
+            @Valid @RequestBody UserUpdateRequest request,
+            Authentication authentication
+    ) {
+        Long userId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(userService.updateMyInfo(userId, request));
     }
 }

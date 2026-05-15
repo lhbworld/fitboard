@@ -32,4 +32,8 @@ public class User {
         this.email = email;
         this.nickname = nickname;
     }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

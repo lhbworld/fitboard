@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.fitboard.global.jwt.JwtTokenProvider;
 import com.example.fitboard.user.dto.LoginResponse;
 import com.example.fitboard.user.dto.MyInfoResponse;
+import com.example.fitboard.user.dto.UserUpdateRequest;
 
 @Service
 @Transactional(readOnly = true)
@@ -74,5 +75,16 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         return new MyInfoResponse(user);
+    }
+
+    @Transactional
+    public MyInfoResponse updateMyInfo(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        user.changeNickname(request.getNickname());
+
+        User savedUser = userRepository.save(user);
+        return new MyInfoResponse(savedUser);
     }
 }

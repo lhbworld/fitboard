@@ -13,38 +13,42 @@ function MyPage() {
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("boards");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editNickname, setEditNickname] = useState("");
 
-        if (!accessToken) {
-          navigate("/login");
-          return;
-        }
+  const fetchData = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
 
-        const meResponse = await api.get("/api/users/me", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setMyInfo(meResponse.data);
-
-        const boardResponse = await api.get("/api/boards");
-        setBoards(boardResponse.data);
-
-        const commentResponse = await api.get("/api/comments/me", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setComments(commentResponse.data);
-      } catch (error) {
-        console.error(error);
-        setMessage("마이페이지 정보를 불러오는 중 오류가 발생했습니다.");
+      if (!accessToken) {
+        navigate("/login");
+        return;
       }
-    };
 
+      const meResponse = await api.get("/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setMyInfo(meResponse.data);
+      setEditNickname(meResponse.data.nickname);
+
+      const boardResponse = await api.get("/api/boards");
+      setBoards(boardResponse.data);
+
+      const commentResponse = await api.get("/api/comments/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setComments(commentResponse.data);
+    } catch (error) {
+      console.error(error);
+      setMessage("마이페이지 정보를 불러오는 중 오류가 발생했습니다.");
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [navigate]);
 
@@ -53,19 +57,95 @@ function MyPage() {
     return boards.filter((board) => board.userId === myInfo.id);
   }, [boards, myInfo]);
 
+  const handleUpdateMyInfo = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        navigate("/login");
+        return;
+      }
+
+      await api.put(
+        "/api/users/me",
+        { nickname: editNickname },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      setIsEditMode(false);
+      setMessage("닉네임이 수정되었습니다.");
+      fetchData();
+    } catch (error) {
+      console.error(error);
+
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "내 정보 수정 중 오류가 발생했습니다.";
+
+      setMessage(errorMessage);
+    }
+  };
+
   return (
     <div className="mypage">
       <Header myInfo={myInfo} />
 
       <main className="mypage-main">
         <section className="mypage-profile-card">
-          <h2 className="mypage-title">마이페이지</h2>
+          <div className="mypage-profile-top">
+            <h2 className="mypage-title">마이페이지</h2>
+
+            {!isEditMode ? (
+              <button
+                className="mypage-edit-button"
+                onClick={() => setIsEditMode(true)}
+              >
+                내 정보 수정
+              </button>
+            ) : (
+              <div className="mypage-edit-action-group">
+                <button
+                  className="mypage-save-button"
+                  onClick={handleUpdateMyInfo}
+                >
+                  저장
+                </button>
+                <button
+                  className="mypage-cancel-button"
+                  onClick={() => {
+                    setIsEditMode(false);
+                    setEditNickname(myInfo?.nickname || "");
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            )}
+          </div>
 
           {myInfo ? (
             <div className="mypage-profile-info">
               <p><strong>아이디</strong> {myInfo.loginId}</p>
               <p><strong>이메일</strong> {myInfo.email}</p>
-              <p><strong>닉네임</strong> {myInfo.nickname}</p>
+
+              {!isEditMode ? (
+                <p><strong>닉네임</strong> {myInfo.nickname}</p>
+              ) : (
+                <div className="mypage-edit-field">
+                  <label className="mypage-edit-label">닉네임</label>
+                  <input
+                    className="mypage-edit-input"
+                    type="text"
+                    value={editNickname}
+                    onChange={(e) => setEditNickname(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <p>내 정보를 불러오는 중입니다.</p>

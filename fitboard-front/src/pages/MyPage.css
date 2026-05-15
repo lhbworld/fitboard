@@ -162,3 +162,64 @@
   font-weight: 700;
   color: #111827;
 }
+
+.mypage-profile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mypage-edit-button,
+.mypage-save-button,
+.mypage-cancel-button {
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-edit-button,
+.mypage-save-button {
+  background: #35c5f0;
+}
+
+.mypage-cancel-button {
+  background: #9ca3af;
+}
+
+.mypage-edit-action-group {
+  display: flex;
+  gap: 8px;
+}
+
+.mypage-edit-field {
+  display: grid;
+  gap: 8px;
+}
+
+.mypage-edit-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.mypage-edit-input {
+  width: 100%;
+  max-width: 320px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  outline: none;
+  font: inherit;
+}
+
+.mypage-edit-input:focus {
+  border-color: #35c5f0;
+}
