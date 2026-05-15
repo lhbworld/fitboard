@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import Header from "../components/Header";
 import "./MyPage.css";
+import Swal from "sweetalert2";
 
 function MyPage() {
   const navigate = useNavigate();
@@ -15,6 +16,17 @@ function MyPage() {
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [editNickname, setEditNickname] = useState("");
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordEditOpen, setIsPasswordEditOpen] = useState(false);
+
+const resetPasswordForm = () => {
+  setCurrentPassword("");
+  setNewPassword("");
+  setConfirmPassword("");
+};
 
   const fetchData = async () => {
     try {
@@ -58,38 +70,147 @@ function MyPage() {
   }, [boards, myInfo]);
 
   const handleUpdateMyInfo = async () => {
-    try {
-      const accessToken = localStorage.getItem("accessToken");
+  try {
+    const accessToken = localStorage.getItem("accessToken");
 
-      if (!accessToken) {
-        navigate("/login");
-        return;
-      }
-
-      await api.put(
-        "/api/users/me",
-        { nickname: editNickname },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      setIsEditMode(false);
-      setMessage("닉네임이 수정되었습니다.");
-      fetchData();
-    } catch (error) {
-      console.error(error);
-
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "내 정보 수정 중 오류가 발생했습니다.";
-
-      setMessage(errorMessage);
+    if (!accessToken) {
+      navigate("/login");
+      return;
     }
-  };
+
+    if (!editNickname.trim()) {
+      await Swal.fire({
+        icon: "warning",
+        title: "입력 확인",
+        text: "닉네임을 입력해주십시오.",
+        confirmButtonColor: "#35c5f0",
+      });
+      return;
+    }
+
+    await api.put(
+      "/api/users/me",
+      { nickname: editNickname },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    setIsEditMode(false);
+    await fetchData();
+
+    await Swal.fire({
+      icon: "success",
+      title: "수정 완료",
+      text: "닉네임이 수정되었습니다.",
+      confirmButtonColor: "#35c5f0",
+    });
+  } catch (error) {
+    console.error(error);
+
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "내 정보 수정 중 오류가 발생했습니다.";
+
+    await Swal.fire({
+      icon: "error",
+      title: "수정 실패",
+      text: errorMessage,
+      confirmButtonColor: "#ef4444",
+    });
+  }
+};
+
+  const handleUpdatePassword = async () => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      await Swal.fire({
+        icon: "warning",
+        title: "입력 확인",
+        text: "모든 비밀번호 항목을 입력해주십시오.",
+        confirmButtonColor: "#35c5f0",
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      await Swal.fire({
+        icon: "error",
+        title: "비밀번호 불일치",
+        text: "새 비밀번호와 비밀번호 확인이 일치하지 않습니다.",
+        confirmButtonColor: "#ef4444",
+      });
+      return;
+    }
+
+    const passwordRegex =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      await Swal.fire({
+        icon: "error",
+        title: "비밀번호 형식 오류",
+        text: "비밀번호는 8자 이상이며 영문, 숫자, 특수문자를 모두 포함해야 합니다.",
+        confirmButtonColor: "#ef4444",
+      });
+      return;
+    }
+    if (currentPassword === newPassword) {
+  await Swal.fire({
+    icon: "error",
+    title: "변경 실패",
+    text: "새 비밀번호는 현재 비밀번호와 다르게 입력해주십시오.",
+    confirmButtonColor: "#ef4444",
+  });
+  return;
+}
+
+    const response = await api.put(
+      "/api/users/me/password",
+      {
+        currentPassword,
+        newPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    await Swal.fire({
+      icon: "success",
+      title: "변경 완료",
+      text: response.data?.message || "비밀번호가 변경되었습니다.",
+      confirmButtonColor: "#35c5f0",
+    });
+
+    resetPasswordForm();
+    setIsPasswordEditOpen(false);
+  } catch (error) {
+    console.error(error);
+
+    const errorMessage =
+      error.response?.data?.message ||
+      "비밀번호 변경 중 오류가 발생했습니다.";
+
+    await Swal.fire({
+      icon: "error",
+      title: "변경 실패",
+      text: errorMessage,
+      confirmButtonColor: "#ef4444",
+    });
+  }
+};
 
   return (
     <div className="mypage">
@@ -97,60 +218,126 @@ function MyPage() {
 
       <main className="mypage-main">
         <section className="mypage-profile-card">
-          <div className="mypage-profile-top">
-            <h2 className="mypage-title">마이페이지</h2>
+  <div className="mypage-profile-top">
+    <h2 className="mypage-title">마이페이지</h2>
 
-            {!isEditMode ? (
-              <button
-                className="mypage-edit-button"
-                onClick={() => setIsEditMode(true)}
-              >
-                내 정보 수정
-              </button>
-            ) : (
-              <div className="mypage-edit-action-group">
-                <button
-                  className="mypage-save-button"
-                  onClick={handleUpdateMyInfo}
-                >
-                  저장
-                </button>
-                <button
-                  className="mypage-cancel-button"
-                  onClick={() => {
-                    setIsEditMode(false);
-                    setEditNickname(myInfo?.nickname || "");
-                  }}
-                >
-                  취소
-                </button>
-              </div>
-            )}
-          </div>
+    <div className="mypage-profile-action-column">
+      {!isEditMode ? (
+        <button
+          className="mypage-edit-button"
+          onClick={() => setIsEditMode(true)}
+        >
+          닉네임 변경
+        </button>
+      ) : (
+        <div className="mypage-edit-action-group">
+          <button
+            className="mypage-save-button"
+            onClick={handleUpdateMyInfo}
+          >
+            저장
+          </button>
+          <button
+            className="mypage-cancel-button"
+            onClick={() => {
+              setIsEditMode(false);
+              setEditNickname(myInfo?.nickname || "");
+            }}
+          >
+            취소
+          </button>
+        </div>
+      )}
 
-          {myInfo ? (
-            <div className="mypage-profile-info">
-              <p><strong>아이디</strong> {myInfo.loginId}</p>
-              <p><strong>이메일</strong> {myInfo.email}</p>
+      {!isPasswordEditOpen ? (
+        <button
+          className="mypage-password-toggle-button"
+          onClick={() => {
+            setIsPasswordEditOpen(true);
+          }}
+        >
+          비밀번호 변경
+        </button>
+      ) : (
+        <button
+          className="mypage-password-close-button"
+          onClick={() => {
+            setIsPasswordEditOpen(false);
+            resetPasswordForm();
+          }}
+        >
+          비밀번호 변경 취소
+        </button>
+      )}
+    </div>
+  </div>
 
-              {!isEditMode ? (
-                <p><strong>닉네임</strong> {myInfo.nickname}</p>
-              ) : (
-                <div className="mypage-edit-field">
-                  <label className="mypage-edit-label">닉네임</label>
-                  <input
-                    className="mypage-edit-input"
-                    type="text"
-                    value={editNickname}
-                    onChange={(e) => setEditNickname(e.target.value)}
-                  />
-                </div>
-              )}
-            </div>
-          ) : (
-            <p>내 정보를 불러오는 중입니다.</p>
-          )}
-        </section>
+  {myInfo ? (
+    <div className="mypage-profile-info">
+      <p><strong>아이디</strong> {myInfo.loginId}</p>
+      <p><strong>이메일</strong> {myInfo.email}</p>
+
+      {!isEditMode ? (
+        <p><strong>닉네임</strong> {myInfo.nickname}</p>
+      ) : (
+        <div className="mypage-edit-field">
+          <label className="mypage-edit-label">닉네임</label>
+          <input
+            className="mypage-edit-input"
+            type="text"
+            value={editNickname}
+            onChange={(e) => setEditNickname(e.target.value)}
+          />
+        </div>
+      )}
+    </div>
+  ) : (
+    <p>내 정보를 불러오는 중입니다.</p>
+  )}
+
+  {isPasswordEditOpen && (
+    <div className="mypage-password-inline-area">
+      <div className="mypage-password-form">
+        <div className="mypage-edit-field">
+          <label className="mypage-edit-label">현재 비밀번호</label>
+          <input
+            className="mypage-edit-input"
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="mypage-edit-field">
+          <label className="mypage-edit-label">새 비밀번호</label>
+          <input
+            className="mypage-edit-input"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="mypage-edit-field">
+          <label className="mypage-edit-label">새 비밀번호 확인</label>
+          <input
+            className="mypage-edit-input"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+
+        <button
+          className="mypage-password-button"
+          onClick={handleUpdatePassword}
+        >
+          저장
+        </button>
+      </div>
+    </div>
+  )}
+</section>
 
         <section className="mypage-board-section">
           <div className="mypage-board-top">
@@ -171,8 +358,6 @@ function MyPage() {
               내가 쓴 댓글 ({comments.length})
             </button>
           </div>
-
-          {message && <p className="mypage-message">{message}</p>}
 
           {activeTab === "boards" && (
             <>

@@ -223,3 +223,91 @@
 .mypage-edit-input:focus {
   border-color: #35c5f0;
 }
+
+.mypage-password-title {
+  margin: 0;
+  font-size: 22px;
+  color: #111827;
+}
+
+.mypage-password-form {
+  display: grid;
+  gap: 14px;
+}
+
+.mypage-password-button {
+  width: fit-content;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-password-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mypage-password-toggle-button,
+.mypage-password-close-button {
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-password-toggle-button {
+  background: #35c5f0;
+}
+
+.mypage-password-close-button {
+  background: #9ca3af;
+}
+
+.mypage-password-guide {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.mypage-profile-action-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mypage-password-inline-area {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.mypage-password-toggle-button,
+.mypage-password-close-button {
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-password-toggle-button {
+  background: #111827;
+}
+
+.mypage-password-close-button {
+  background: #9ca3af;
+}

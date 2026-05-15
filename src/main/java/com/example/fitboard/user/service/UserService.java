@@ -11,6 +11,7 @@ import com.example.fitboard.global.jwt.JwtTokenProvider;
 import com.example.fitboard.user.dto.LoginResponse;
 import com.example.fitboard.user.dto.MyInfoResponse;
 import com.example.fitboard.user.dto.UserUpdateRequest;
+import com.example.fitboard.user.dto.PasswordUpdateRequest;
 
 @Service
 @Transactional(readOnly = true)
@@ -86,5 +87,24 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
         return new MyInfoResponse(savedUser);
+    }
+
+    @Transactional
+    public void updatePassword(Long userId, PasswordUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        if (request.getCurrentPassword().equals(request.getNewPassword())) {
+            throw new IllegalArgumentException("새 비밀번호는 현재 비밀번호와 다르게 입력해주십시오.");
+        }
+
+        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+        user.changePassword(encodedNewPassword);
+
+        userRepository.save(user);
     }
 }

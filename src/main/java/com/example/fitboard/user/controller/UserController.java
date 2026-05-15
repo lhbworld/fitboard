@@ -11,6 +11,7 @@ import com.example.fitboard.user.dto.MyInfoResponse;
 import org.springframework.security.core.Authentication;
 import java.util.Map;
 import com.example.fitboard.user.dto.UserUpdateRequest;
+import com.example.fitboard.user.dto.PasswordUpdateRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -48,5 +49,19 @@ public class UserController {
     ) {
         Long userId = Long.parseLong(authentication.getName());
         return ResponseEntity.ok(userService.updateMyInfo(userId, request));
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Map<String, String>> updatePassword(
+            @Valid @RequestBody PasswordUpdateRequest request,
+            Authentication authentication
+    ) {
+        try {
+            Long userId = Long.parseLong(authentication.getName());
+            userService.updatePassword(userId, request);
+            return ResponseEntity.ok(Map.of("message", "비밀번호가 변경되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 }
