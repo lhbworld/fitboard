@@ -20,7 +20,9 @@ public class CommentResponse {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.userId = comment.getUser().getId();
-        this.nickname = comment.getUser().getNickname();
+        this.nickname = comment.getUser().isDeleted()
+                ? "탈퇴한 회원"
+                : comment.getUser().getNickname();
         this.boardId = comment.getBoard().getId();
         this.createdAt = comment.getCreatedAt();
         this.updatedAt = comment.getUpdatedAt();

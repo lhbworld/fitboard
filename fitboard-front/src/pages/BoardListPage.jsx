@@ -131,11 +131,20 @@ function BoardListPage() {
             </div>
 
             <button
-              className="board-write-button"
-              onClick={() => navigate("/boards/new")}
-            >
-              글쓰기
-            </button>
+  className="board-write-button"
+  onClick={() => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/boards/new");
+  }}
+>
+  글쓰기
+</button>
           </div>
         </section>
 

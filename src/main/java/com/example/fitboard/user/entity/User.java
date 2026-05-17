@@ -26,6 +26,8 @@ public class User {
     @Column(nullable = false, length = 30)
     private String nickname;
 
+    private boolean deleted = false;
+
     public User(String loginId, String password, String email, String nickname) {
         this.loginId = loginId;
         this.password = password;
@@ -39,5 +41,10 @@ public class User {
 
     public void changePassword(String password) {
         this.password = password;
+    }
+
+    public void withdraw() {
+        this.deleted = true;
+        this.nickname = "탈퇴한 회원";
     }
 }

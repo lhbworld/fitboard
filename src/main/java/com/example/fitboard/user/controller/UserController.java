@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import java.util.Map;
 import com.example.fitboard.user.dto.UserUpdateRequest;
 import com.example.fitboard.user.dto.PasswordUpdateRequest;
+import com.example.fitboard.user.dto.DeleteAccountRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -60,6 +61,20 @@ public class UserController {
             Long userId = Long.parseLong(authentication.getName());
             userService.updatePassword(userId, request);
             return ResponseEntity.ok(Map.of("message", "비밀번호가 변경되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Map<String, String>> deleteMyAccount(
+            @Valid @RequestBody DeleteAccountRequest request,
+            Authentication authentication
+    ) {
+        try {
+            Long userId = Long.parseLong(authentication.getName());
+            userService.deleteMyAccount(userId, request);
+            return ResponseEntity.ok(Map.of("message", "회원 탈퇴가 완료되었습니다."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }

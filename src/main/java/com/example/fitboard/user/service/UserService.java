@@ -12,6 +12,9 @@ import com.example.fitboard.user.dto.LoginResponse;
 import com.example.fitboard.user.dto.MyInfoResponse;
 import com.example.fitboard.user.dto.UserUpdateRequest;
 import com.example.fitboard.user.dto.PasswordUpdateRequest;
+import com.example.fitboard.user.dto.DeleteAccountRequest;
+import com.example.fitboard.board.repository.BoardRepository;
+import com.example.fitboard.comment.repository.CommentRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,13 +23,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       JwtTokenProvider jwtTokenProvider) {
+                       JwtTokenProvider jwtTokenProvider,
+                       BoardRepository boardRepository,
+                       CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.boardRepository = boardRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional
@@ -49,6 +58,10 @@ public class UserService {
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
+
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("탈퇴한 회원입니다.");
+        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
@@ -105,6 +118,26 @@ public class UserService {
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         user.changePassword(encodedNewPassword);
 
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteMyAccount(Long userId, DeleteAccountRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        commentRepository.deleteByBoard_User_Id(userId);
+        boardRepository.deleteByUser_Id(userId);
+
+        user.withdraw();
         userRepository.save(user);
     }
 }

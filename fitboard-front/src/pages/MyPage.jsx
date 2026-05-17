@@ -46,8 +46,8 @@ const resetPasswordForm = () => {
       setEditNickname(meResponse.data.nickname);
 
       const boardResponse = await api.get("/api/boards");
-      setBoards(boardResponse.data);
-
+      setBoards(boardResponse.data.content || []);
+      
       const commentResponse = await api.get("/api/comments/me", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -188,14 +188,14 @@ const resetPasswordForm = () => {
     );
 
     await Swal.fire({
-      icon: "success",
-      title: "변경 완료",
-      text: response.data?.message || "비밀번호가 변경되었습니다.",
-      confirmButtonColor: "#35c5f0",
-    });
+  icon: "success",
+  title: "변경 완료",
+  text: "비밀번호가 변경되었습니다. 다시 로그인해주십시오.",
+  confirmButtonColor: "#35c5f0",
+});
 
-    resetPasswordForm();
-    setIsPasswordEditOpen(false);
+localStorage.removeItem("accessToken");
+navigate("/login");
   } catch (error) {
     console.error(error);
 
@@ -212,6 +212,74 @@ const resetPasswordForm = () => {
   }
 };
 
+const handleDeleteMyAccount = async () => {
+  const { value: password } = await Swal.fire({
+    icon: "warning",
+    title: "회원 탈퇴",
+    text: "비밀번호를 입력하면 탈퇴가 진행됩니다.",
+    input: "password",
+    inputPlaceholder: "현재 비밀번호 입력",
+    inputAttributes: {
+      autocapitalize: "off",
+      autocorrect: "off",
+    },
+    showCancelButton: true,
+    confirmButtonColor: "#ef4444",
+    cancelButtonColor: "#9ca3af",
+    confirmButtonText: "탈퇴하기",
+    cancelButtonText: "취소",
+    inputValidator: (value) => {
+      if (!value) {
+        return "비밀번호를 입력해주십시오.";
+      }
+    },
+  });
+
+  if (!password) {
+    return;
+  }
+
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+
+    const response = await api.delete("/api/users/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      data: {
+        password,
+      },
+    });
+
+    localStorage.removeItem("accessToken");
+
+    await Swal.fire({
+      icon: "success",
+      title: "탈퇴 완료",
+      text: response.data?.message || "회원 탈퇴가 완료되었습니다.",
+      confirmButtonColor: "#35c5f0",
+    });
+
+    navigate("/login");
+  } catch (error) {
+    console.error(error);
+
+    const errorMessage =
+      error.response?.data?.message || "회원 탈퇴 중 오류가 발생했습니다.";
+
+    await Swal.fire({
+      icon: "error",
+      title: "탈퇴 실패",
+      text: errorMessage,
+      confirmButtonColor: "#ef4444",
+    });
+  }
+};
   return (
     <div className="mypage">
       <Header myInfo={myInfo} />
@@ -269,6 +337,12 @@ const resetPasswordForm = () => {
           비밀번호 변경 취소
         </button>
       )}
+      <button
+  className="mypage-delete-button"
+  onClick={handleDeleteMyAccount}
+>
+  회원 탈퇴
+</button>
     </div>
   </div>
 

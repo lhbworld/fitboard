@@ -65,3 +65,22 @@
   font-size: 14px;
   color: #374151;
 }
+
+.login-bottom-actions {
+  margin-top: 14px;
+}
+
+.login-secondary-button {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-secondary-button:hover {
+  background: #f9fafb;
+}

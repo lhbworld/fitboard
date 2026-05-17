@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 import BoardListPage from "./pages/BoardListPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardCreatePage from "./pages/BoardCreatePage";
@@ -10,8 +11,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/boards" replace />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+
       <Route path="/boards" element={<BoardListPage />} />
       <Route path="/boards/:boardId" element={<BoardDetailPage />} />
 
