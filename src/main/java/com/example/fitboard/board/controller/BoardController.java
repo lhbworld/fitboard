@@ -8,6 +8,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import com.example.fitboard.board.dto.BoardPageResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Map;
@@ -33,9 +37,24 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardResponse>> getBoards() {
-        List<BoardResponse> response = boardService.getBoards();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<BoardPageResponse> getBoards(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "createdAt,desc") String sort
+    ) {
+        String[] sortParts = sort.split(",");
+        String sortField = sortParts[0];
+        Sort.Direction direction = Sort.Direction.DESC;
+
+        if (sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc")) {
+            direction = Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+        return ResponseEntity.ok(boardService.getBoardsWithPaging(category, keyword, pageable));
     }
 
     @GetMapping("/{boardId}")

@@ -9,8 +9,14 @@ import com.example.fitboard.user.entity.User;
 import com.example.fitboard.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.fitboard.board.dto.BoardPageResponse;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 @Transactional(readOnly = true)
@@ -87,5 +93,34 @@ public class BoardService {
         if (!board.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    public BoardPageResponse getBoardsWithPaging(String category, String keyword, Pageable pageable) {
+        Specification<Board> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (category != null && !category.isBlank() && !"전체".equals(category)) {
+                predicates.add(criteriaBuilder.equal(root.get("category"), category));
+            }
+
+            if (keyword != null && !keyword.isBlank()) {
+                String likeKeyword = "%" + keyword.toLowerCase() + "%";
+
+                Predicate titlePredicate =
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likeKeyword);
+
+                Predicate contentPredicate =
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), likeKeyword);
+
+                predicates.add(criteriaBuilder.or(titlePredicate, contentPredicate));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<BoardResponse> pageResult = boardRepository.findAll(spec, pageable)
+                .map(BoardResponse::new);
+
+        return new BoardPageResponse(pageResult);
     }
 }

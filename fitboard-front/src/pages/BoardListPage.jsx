@@ -1,88 +1,120 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import Header from "../components/Header";
 import "./BoardListPage.css";
 
 function BoardListPage() {
+  const navigate = useNavigate();
+
   const [boards, setBoards] = useState([]);
   const [myInfo, setMyInfo] = useState(null);
   const [message, setMessage] = useState("");
+
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const navigate = useNavigate();
+  const [inputKeyword, setInputKeyword] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [sortType, setSortType] = useState("latest");
-  const [showOnlyMine, setShowOnlyMine] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-
-        if (accessToken) {
-          try {
-            const meResponse = await api.get("/api/users/me", {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            });
-            setMyInfo(meResponse.data);
-          } catch (error) {
-            setMyInfo(null);
-          }
-        } else {
-          setMyInfo(null);
-        }
-
-        const boardResponse = await api.get("/api/boards");
-        setBoards(boardResponse.data);
-      } catch (error) {
-        console.error(error);
-        setMessage("게시글 목록을 불러오는 중 오류가 발생했습니다.");
-      }
-    };
-
-    fetchData();
-  }, []);
+  const [page, setPage] = useState(0);
+  const [size] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isFirst, setIsFirst] = useState(true);
+  const [isLast, setIsLast] = useState(true);
 
   const categories = ["전체", "헬스", "식단", "유산소", "루틴", "질문"];
 
-  const filteredBoards = useMemo(() => {
-  let result = boards.filter((board) => {
-    const matchesCategory =
-      selectedCategory === "전체" || board.category === selectedCategory;
+  const getSortValue = () => {
+    if (sortType === "latest") return "createdAt,desc";
+    if (sortType === "oldest") return "createdAt,asc";
+    if (sortType === "viewCount") return "viewCount,desc";
+    return "createdAt,desc";
+  };
 
-    const keyword = searchKeyword.trim().toLowerCase();
-    const matchesKeyword =
-      keyword === "" ||
-      board.title?.toLowerCase().includes(keyword) ||
-      board.content?.toLowerCase().includes(keyword);
+  const fetchBoards = async () => {
+    try {
+      const params = {
+        page,
+        size,
+        sort: getSortValue(),
+      };
 
-    const matchesMine =
-      !showOnlyMine || (myInfo && board.userId === myInfo.id);
+      if (selectedCategory !== "전체") {
+        params.category = selectedCategory;
+      }
 
-    return matchesCategory && matchesKeyword && matchesMine;
-  });
+      if (searchKeyword.trim()) {
+        params.keyword = searchKeyword.trim();
+      }
 
-  result = [...result].sort((a, b) => {
-    if (sortType === "latest") {
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      const response = await api.get("/api/boards", { params });
+
+      setBoards(response.data.content || []);
+      setTotalPages(response.data.totalPages || 0);
+      setIsFirst(response.data.first);
+      setIsLast(response.data.last);
+    } catch (error) {
+      console.error(error);
+      setMessage("게시글 목록을 불러오는 중 오류가 발생했습니다.");
     }
+  };
 
-    if (sortType === "oldest") {
-      return new Date(a.createdAt) - new Date(b.createdAt);
+  const fetchMyInfo = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        setMyInfo(null);
+        return;
+      }
+
+      const response = await api.get("/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setMyInfo(response.data);
+    } catch (error) {
+      console.error(error);
+      setMyInfo(null);
     }
+  };
 
-    if (sortType === "viewCount") {
-      return (b.viewCount || 0) - (a.viewCount || 0);
+  useEffect(() => {
+    fetchMyInfo();
+  }, []);
+
+  useEffect(() => {
+    fetchBoards();
+  }, [page, size, selectedCategory, searchKeyword, sortType]);
+
+  const handleSearch = () => {
+    setPage(0);
+    setSearchKeyword(inputKeyword);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setPage(0);
+  };
+
+  const handleSortChange = (e) => {
+    setSortType(e.target.value);
+    setPage(0);
+  };
+
+  const handleToggleSearch = () => {
+    if (isSearchOpen) {
+      setInputKeyword("");
+      setSearchKeyword("");
+      setPage(0);
     }
+    setIsSearchOpen((prev) => !prev);
+  };
 
-    return 0;
-  });
-
-  return result;
-}, [boards, selectedCategory, searchKeyword, showOnlyMine, sortType, myInfo]);
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index);
 
   return (
     <div className="board-page">
@@ -108,84 +140,74 @@ function BoardListPage() {
         </section>
 
         <section className="board-filter-section">
-  <div className="board-filter-top">
-    <div className="board-category-group">
-      {categories.map((category) => (
-        <button
-          key={category}
-          className={
-            selectedCategory === category
-              ? "board-category-button active"
-              : "board-category-button"
-          }
-          onClick={() => setSelectedCategory(category)}
-        >
-          {category}
-        </button>
-      ))}
-    </div>
+          <div className="board-filter-top">
+            <div className="board-category-group">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={
+                    selectedCategory === category
+                      ? "board-category-button active"
+                      : "board-category-button"
+                  }
+                  onClick={() => handleCategoryChange(category)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
 
-    <button
-      className="board-search-toggle-button"
-      onClick={() => {
-  if (isSearchOpen) {
-    setSearchKeyword("");
-  }
-  setIsSearchOpen((prev) => !prev);
-}}
-    >
-      {isSearchOpen ? "검색 닫기" : "검색"}
-    </button>
-  </div>
+            <button
+              className="board-search-toggle-button"
+              onClick={handleToggleSearch}
+            >
+              {isSearchOpen ? "검색 닫기" : "검색"}
+            </button>
+          </div>
 
-  {isSearchOpen && (
-    <div className="board-search-group">
-      <input
-        className="board-search-input"
-        type="text"
-        placeholder="제목 또는 내용으로 검색해주십시오."
-        value={searchKeyword}
-        onChange={(e) => setSearchKeyword(e.target.value)}
-      />
-    </div>
-  )}
-</section>
+          {isSearchOpen && (
+            <div className="board-search-group">
+              <input
+                className="board-search-input"
+                type="text"
+                placeholder="제목 또는 내용으로 검색해주십시오."
+                value={inputKeyword}
+                onChange={(e) => setInputKeyword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
+              />
+              <button className="board-search-button" onClick={handleSearch}>
+                검색
+              </button>
+            </div>
+          )}
+        </section>
 
-<section className="board-option-section">
-  <div className="board-option-left">
-    <label className="board-sort-label">정렬</label>
-    <select
-      className="board-sort-select"
-      value={sortType}
-      onChange={(e) => setSortType(e.target.value)}
-    >
-      <option value="latest">최신순</option>
-      <option value="oldest">오래된순</option>
-      <option value="viewCount">조회수 높은순</option>
-    </select>
-  </div>
-
-  <div className="board-option-right">
-    <label className="board-mine-check">
-      <input
-        type="checkbox"
-        checked={showOnlyMine}
-        onChange={(e) => setShowOnlyMine(e.target.checked)}
-      />
-      내가 쓴 글만 보기
-    </label>
-  </div>
-</section>
+        <section className="board-option-section">
+          <div className="board-option-left">
+            <label className="board-sort-label">정렬</label>
+            <select
+              className="board-sort-select"
+              value={sortType}
+              onChange={handleSortChange}
+            >
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된순</option>
+              <option value="viewCount">조회수 높은순</option>
+            </select>
+          </div>
+        </section>
 
         {message && <p className="board-message">{message}</p>}
 
         <section className="board-list">
-          {filteredBoards.length === 0 ? (
-            <div className="board-empty">
-              조건에 맞는 게시글이 없습니다.
-            </div>
+          {boards.length === 0 ? (
+            <div className="board-empty">조건에 맞는 게시글이 없습니다.</div>
           ) : (
-            filteredBoards.map((board) => (
+            boards.map((board) => (
               <article
                 className="board-card"
                 key={board.id}
@@ -210,6 +232,42 @@ function BoardListPage() {
             ))
           )}
         </section>
+
+        {totalPages > 0 && (
+          <section className="board-pagination">
+            <button
+              className="board-page-button"
+              disabled={isFirst}
+              onClick={() => setPage((prev) => prev - 1)}
+            >
+              이전
+            </button>
+
+            <div className="board-page-number-group">
+              {pageNumbers.map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  className={
+                    page === pageNumber
+                      ? "board-page-number active"
+                      : "board-page-number"
+                  }
+                  onClick={() => setPage(pageNumber)}
+                >
+                  {pageNumber + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="board-page-button"
+              disabled={isLast}
+              onClick={() => setPage((prev) => prev + 1)}
+            >
+              다음
+            </button>
+          </section>
+        )}
       </main>
     </div>
   );
