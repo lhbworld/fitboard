@@ -1,8 +1,9 @@
 .login-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  background: #f6f7f9;
   padding: 24px;
 }
 
@@ -11,59 +12,61 @@
   max-width: 420px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 40px 32px;
-  box-shadow: 0 10px 30px rgba(129, 65, 65, 0.05);
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
 }
 
-.login-brand {
-  margin: 0 0 6px;
-  font-size: 34px;
+.login-logo {
+  margin: 0 0 8px;
+  font-size: 42px;
   font-weight: 800;
-  letter-spacing: -0.03em;
   color: #111827;
+  letter-spacing: -0.02em;
 }
 
 .login-subtitle {
-  margin: 0 0 28px;
-  font-size: 17px;
+  margin: 0 0 22px;
   color: #6b7280;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.login-form {
+  display: grid;
+  gap: 12px;
 }
 
 .login-input {
   width: 100%;
-  height: 48px;
+  height: 50px;
   padding: 0 14px;
-  margin-bottom: 12px;
   border: 1px solid #d1d5db;
-  border-radius: 10px;
+  border-radius: 14px;
   background: #ffffff;
   outline: none;
+  font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .login-input:focus {
   border-color: #35c5f0;
+  box-shadow: 0 0 0 4px rgba(53, 197, 240, 0.12);
 }
 
 .login-button {
-  width: 100%;
-  height: 48px;
+  height: 50px;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   background: #35c5f0;
-  color: white;
+  color: #ffffff;
   font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
 }
 
 .login-button:hover {
-  opacity: 0.95;
-}
-
-.login-message {
-  margin-top: 16px;
-  font-size: 14px;
-  color: #374151;
+  opacity: 0.96;
 }
 
 .login-bottom-actions {
@@ -72,12 +75,13 @@
 
 .login-secondary-button {
   width: 100%;
-  height: 46px;
+  height: 48px;
   border: 1px solid #d1d5db;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #ffffff;
   color: #374151;
   font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
 }
 

@@ -3,8 +3,33 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import "./BoardDetailPage.css";
 import Header from "../components/Header";
+import Swal from "sweetalert2";
 
 function BoardDetailPage() {
+  const requireLogin = async () => {
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (accessToken) {
+    return true;
+  }
+
+  const result = await Swal.fire({
+    icon: "warning",
+    title: "로그인 필요",
+    text: "로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?",
+    showCancelButton: true,
+    confirmButtonColor: "#35c5f0",
+    cancelButtonColor: "#9ca3af",
+    confirmButtonText: "로그인하러 가기",
+    cancelButtonText: "취소",
+  });
+
+  if (result.isConfirmed) {
+    navigate("/login");
+  }
+
+  return false;
+};
   const { boardId } = useParams();
   const navigate = useNavigate();
 
@@ -66,44 +91,63 @@ function BoardDetailPage() {
   }, [boardId]);
 
   const handleCommentSubmit = async () => {
-    try {
-      const accessToken = getAccessToken();
+  const canProceed = await requireLogin();
 
-      if (!accessToken) {
-        setCommentMessage("로그인 후 댓글을 작성할 수 있습니다.");
-        navigate("/login");
-        return;
+  if (!canProceed) {
+    return;
+  }
+
+  if (!commentContent.trim()) {
+    await Swal.fire({
+      icon: "warning",
+      title: "입력 확인",
+      text: "댓글 내용을 입력해주십시오.",
+      confirmButtonColor: "#35c5f0",
+    });
+    return;
+  }
+
+  try {
+    const accessToken = getAccessToken();
+
+    await api.post(
+      `/api/boards/${boardId}/comments`,
+      { content: commentContent },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       }
+    );
 
-      if (!commentContent.trim()) {
-        setCommentMessage("댓글 내용을 입력해주십시오.");
-        return;
-      }
+    setCommentContent("");
 
-      await api.post(
-        `/api/boards/${boardId}/comments`,
-        { content: commentContent },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+    await Swal.fire({
+      icon: "success",
+      title: "등록 완료",
+      text: "댓글이 등록되었습니다.",
+      confirmButtonColor: "#35c5f0",
+      timer: 1000,
+      showConfirmButton: false,
+    });
 
-      setCommentContent("");
-      setCommentMessage("댓글이 등록되었습니다.");
-      await fetchBoardDetail();
-    } catch (error) {
-      console.error(error);
+    await fetchBoardDetail();
+  } catch (error) {
+    console.error(error);
 
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "댓글 등록 중 오류가 발생했습니다.";
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "댓글 등록 중 오류가 발생했습니다.";
 
-      setCommentMessage(errorMessage);
-    }
-  };
+    await Swal.fire({
+      icon: "error",
+      title: "등록 실패",
+      text: errorMessage,
+      confirmButtonColor: "#ef4444",
+    });
+  }
+};
 
   const handleDeleteBoard = async () => {
     try {
@@ -306,10 +350,6 @@ function BoardDetailPage() {
               댓글 등록
             </button>
           </div>
-
-          {commentMessage && (
-            <p className="comment-message">{commentMessage}</p>
-          )}
 
           {comments.length === 0 ? (
             <div className="comment-empty">아직 댓글이 없습니다.</div>

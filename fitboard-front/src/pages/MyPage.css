@@ -326,3 +326,298 @@
 .mypage-delete-button:hover {
   opacity: 0.95;
 }
+
+.mypage {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding-bottom: 60px;
+}
+
+.mypage-main {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+  display: grid;
+  gap: 20px;
+}
+
+.mypage-profile-card,
+.mypage-board-section {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+}
+
+.mypage-profile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.mypage-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+.mypage-profile-action-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mypage-profile-info {
+  display: grid;
+  gap: 12px;
+  color: #374151;
+}
+
+.mypage-profile-info p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.mypage-edit-field {
+  display: grid;
+  gap: 8px;
+}
+
+.mypage-edit-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.mypage-edit-input {
+  width: 100%;
+  max-width: 340px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  outline: none;
+  font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mypage-edit-input:focus {
+  border-color: #35c5f0;
+  box-shadow: 0 0 0 4px rgba(53, 197, 240, 0.12);
+}
+
+.mypage-edit-button,
+.mypage-save-button,
+.mypage-cancel-button,
+.mypage-password-toggle-button,
+.mypage-password-close-button,
+.mypage-password-button,
+.mypage-delete-button {
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-edit-button,
+.mypage-save-button {
+  background: #35c5f0;
+}
+
+.mypage-cancel-button,
+.mypage-password-close-button {
+  background: #9ca3af;
+}
+
+.mypage-password-toggle-button,
+.mypage-password-button {
+  background: #111827;
+}
+
+.mypage-delete-button {
+  background: #ef4444;
+}
+
+.mypage-delete-button:hover,
+.mypage-password-toggle-button:hover,
+.mypage-password-button:hover,
+.mypage-edit-button:hover,
+.mypage-save-button:hover,
+.mypage-cancel-button:hover,
+.mypage-password-close-button:hover {
+  opacity: 0.96;
+}
+
+.mypage-edit-action-group {
+  display: flex;
+  gap: 8px;
+}
+
+.mypage-password-inline-area {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.mypage-password-form {
+  display: grid;
+  gap: 14px;
+  max-width: 420px;
+}
+
+.mypage-board-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mypage-board-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.mypage-tab-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.mypage-tab {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mypage-tab.active {
+  background: #35c5f0;
+  border-color: #35c5f0;
+  color: #ffffff;
+}
+
+.mypage-board-list,
+.mypage-comment-list {
+  display: grid;
+  gap: 14px;
+}
+
+.mypage-board-card,
+.mypage-comment-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 18px;
+  background: #fbfdff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.mypage-board-card:hover,
+.mypage-comment-card:hover {
+  background: #f8fbff;
+  transform: translateY(-1px);
+}
+
+.mypage-board-card-top,
+.mypage-comment-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.mypage-category {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #e0f7ff;
+  color: #0891b2;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mypage-date {
+  font-size: 13px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.mypage-board-card-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.mypage-board-card-content,
+.mypage-comment-content {
+  margin: 0 0 12px;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.mypage-comment-board {
+  font-weight: 700;
+  color: #111827;
+}
+
+.mypage-board-meta {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.mypage-empty {
+  padding: 34px 20px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  color: #6b7280;
+  background: #fbfdff;
+}
+
+@media (max-width: 768px) {
+  .mypage-main {
+    padding: 0 16px;
+  }
+
+  .mypage-profile-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mypage-profile-action-column {
+    align-items: stretch;
+  }
+
+  .mypage-edit-action-group {
+    width: 100%;
+  }
+
+  .mypage-edit-action-group button {
+    flex: 1;
+  }
+
+  .mypage-password-form {
+    max-width: none;
+  }
+}
