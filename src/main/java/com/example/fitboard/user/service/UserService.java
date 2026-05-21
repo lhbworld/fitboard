@@ -15,6 +15,7 @@ import com.example.fitboard.user.dto.PasswordUpdateRequest;
 import com.example.fitboard.user.dto.DeleteAccountRequest;
 import com.example.fitboard.board.repository.BoardRepository;
 import com.example.fitboard.comment.repository.CommentRepository;
+import com.example.fitboard.user.entity.AuthProvider;
 
 @Service
 @Transactional(readOnly = true)
@@ -130,8 +131,14 @@ public class UserService {
             throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        if (user.getProvider() == AuthProvider.LOCAL) {
+            if (request == null || request.getPassword() == null || request.getPassword().isBlank()) {
+                throw new IllegalArgumentException("비밀번호를 입력해주십시오.");
+            }
+
+            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            }
         }
 
         commentRepository.deleteByBoard_User_Id(userId);

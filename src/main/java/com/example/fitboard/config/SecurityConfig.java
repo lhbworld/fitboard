@@ -41,7 +41,8 @@ public class SecurityConfig {
                                 "/test",
                                 "/error",
                                 "/api/users/signup",
-                                "/api/users/login"
+                                "/api/users/login",
+                                "/api/auth/kakao/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/boards/**", "/api/comments/**").permitAll()
                         .requestMatchers("/api/users/me").authenticated()

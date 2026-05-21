@@ -10,11 +10,13 @@ public class MyInfoResponse {
     private final String loginId;
     private final String email;
     private final String nickname;
+    private String provider;
 
     public MyInfoResponse(User user) {
         this.id = user.getId();
         this.loginId = user.getLoginId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();
+        this.provider = user.getProvider().name();
     }
 }

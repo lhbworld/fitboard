@@ -69,6 +69,8 @@ const resetPasswordForm = () => {
     return boards.filter((board) => board.userId === myInfo.id);
   }, [boards, myInfo]);
 
+  const isKakaoUser = myInfo?.provider === "KAKAO";
+
   const handleUpdateMyInfo = async () => {
   try {
     const accessToken = localStorage.getItem("accessToken");
@@ -213,47 +215,68 @@ navigate("/login");
 };
 
 const handleDeleteMyAccount = async () => {
-  const { value: password } = await Swal.fire({
-    icon: "warning",
-    title: "회원 탈퇴",
-    text: "비밀번호를 입력하면 탈퇴가 진행됩니다.",
-    input: "password",
-    inputPlaceholder: "현재 비밀번호 입력",
-    inputAttributes: {
-      autocapitalize: "off",
-      autocorrect: "off",
-    },
-    showCancelButton: true,
-    confirmButtonColor: "#ef4444",
-    cancelButtonColor: "#9ca3af",
-    confirmButtonText: "탈퇴하기",
-    cancelButtonText: "취소",
-    inputValidator: (value) => {
-      if (!value) {
-        return "비밀번호를 입력해주십시오.";
-      }
-    },
-  });
+  const accessToken = localStorage.getItem("accessToken");
 
-  if (!password) {
+  if (!accessToken) {
+    navigate("/login");
     return;
   }
 
-  try {
-    const accessToken = localStorage.getItem("accessToken");
+  let requestData = {};
 
-    if (!accessToken) {
-      navigate("/login");
+  if (isKakaoUser) {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "회원 탈퇴",
+      text: "카카오 계정으로 로그인한 회원입니다. 탈퇴하면 작성한 게시글은 삭제되고, 일부 댓글은 '탈퇴한 회원'으로 표시됩니다. 정말 탈퇴하시겠습니까?",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#9ca3af",
+      confirmButtonText: "탈퇴하기",
+      cancelButtonText: "취소",
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+  } else {
+    const { value: password } = await Swal.fire({
+      icon: "warning",
+      title: "회원 탈퇴",
+      text: "비밀번호를 입력하면 탈퇴가 진행됩니다.",
+      input: "password",
+      inputPlaceholder: "현재 비밀번호 입력",
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off",
+      },
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#9ca3af",
+      confirmButtonText: "탈퇴하기",
+      cancelButtonText: "취소",
+      inputValidator: (value) => {
+        if (!value) {
+          return "비밀번호를 입력해주십시오.";
+        }
+      },
+    });
+
+    if (!password) {
       return;
     }
 
+    requestData = {
+      password,
+    };
+  }
+
+  try {
     const response = await api.delete("/api/users/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      data: {
-        password,
-      },
+      data: requestData,
     });
 
     localStorage.removeItem("accessToken");
@@ -280,6 +303,7 @@ const handleDeleteMyAccount = async () => {
     });
   }
 };
+
   return (
     <div className="mypage">
       <Header myInfo={myInfo} />
@@ -317,26 +341,30 @@ const handleDeleteMyAccount = async () => {
         </div>
       )}
 
-      {!isPasswordEditOpen ? (
-        <button
-          className="mypage-password-toggle-button"
-          onClick={() => {
-            setIsPasswordEditOpen(true);
-          }}
-        >
-          비밀번호 변경
-        </button>
-      ) : (
-        <button
-          className="mypage-password-close-button"
-          onClick={() => {
-            setIsPasswordEditOpen(false);
-            resetPasswordForm();
-          }}
-        >
-          비밀번호 변경 취소
-        </button>
-      )}
+      {!isKakaoUser && (
+  <>
+    {!isPasswordEditOpen ? (
+      <button
+        className="mypage-password-toggle-button"
+        onClick={() => {
+          setIsPasswordEditOpen(true);
+        }}
+      >
+        비밀번호 변경
+      </button>
+    ) : (
+      <button
+        className="mypage-password-close-button"
+        onClick={() => {
+          setIsPasswordEditOpen(false);
+          resetPasswordForm();
+        }}
+      >
+        비밀번호 변경 취소
+      </button>
+    )}
+  </>
+)}
       <button
   className="mypage-delete-button"
   onClick={handleDeleteMyAccount}
@@ -369,7 +397,7 @@ const handleDeleteMyAccount = async () => {
     <p>내 정보를 불러오는 중입니다.</p>
   )}
 
-  {isPasswordEditOpen && (
+  {!isKakaoUser && isPasswordEditOpen && (
     <div className="mypage-password-inline-area">
       <div className="mypage-password-form">
         <div className="mypage-edit-field">

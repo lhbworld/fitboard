@@ -6,6 +6,7 @@ import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardCreatePage from "./pages/BoardCreatePage";
 import BoardEditPage from "./pages/BoardEditPage";
 import MyPage from "./pages/MyPage";
+import KakaoCallbackPage from "./pages/KakaoCallbackPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path="/" element={<Navigate to="/boards" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/oauth/kakao/callback" element={<KakaoCallbackPage />} />
 
       <Route path="/boards" element={<BoardListPage />} />
       <Route path="/boards/:boardId" element={<BoardDetailPage />} />

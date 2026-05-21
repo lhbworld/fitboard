@@ -68,7 +68,7 @@ public class UserController {
 
     @DeleteMapping("/me")
     public ResponseEntity<Map<String, String>> deleteMyAccount(
-            @Valid @RequestBody DeleteAccountRequest request,
+            @RequestBody(required = false) DeleteAccountRequest request,
             Authentication authentication
     ) {
         try {
