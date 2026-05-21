@@ -24,7 +24,7 @@ jwt:
   expiration-ms: 3600000
 
 kakao:
-  client-id: "31cdc328658ed0b4d361fcad11167c3b"
-  client-secret: "6mAlYnriDAeuSavYlcbMpwLP2k6YJrlr"
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
   redirect-uri: "http://localhost:8081/api/auth/kakao/callback"
   frontend-redirect-uri: "http://localhost:5173/oauth/kakao/callback"
