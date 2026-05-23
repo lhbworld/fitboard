@@ -1,12 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "./MyPage.css";
 import Swal from "sweetalert2";
 
 function MyPage() {
   const navigate = useNavigate();
+  const API_BASE_URL = api.defaults.baseURL || "http://localhost:8081";
+  const activitySectionRef = useRef(null);
 
   const [myInfo, setMyInfo] = useState(null);
   const [boards, setBoards] = useState([]);
@@ -28,7 +31,7 @@ const resetPasswordForm = () => {
   setConfirmPassword("");
 };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async (isMounted = () => true) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
 
@@ -42,10 +45,18 @@ const resetPasswordForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      if (!isMounted()) {
+        return;
+      }
+
       setMyInfo(meResponse.data);
       setEditNickname(meResponse.data.nickname);
 
       const boardResponse = await api.get("/api/boards");
+      if (!isMounted()) {
+        return;
+      }
+
       setBoards(boardResponse.data.content || []);
       
       const commentResponse = await api.get("/api/comments/me", {
@@ -53,16 +64,32 @@ const resetPasswordForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      if (!isMounted()) {
+        return;
+      }
+
       setComments(commentResponse.data);
     } catch (error) {
       console.error(error);
-      setMessage("마이페이지 정보를 불러오는 중 오류가 발생했습니다.");
+      if (isMounted()) {
+        setMessage("마이페이지 정보를 불러오는 중 오류가 발생했습니다.");
+      }
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
-    fetchData();
-  }, [navigate]);
+    let isMounted = true;
+
+    const loadData = async () => {
+      await fetchData(() => isMounted);
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchData]);
 
   const myBoards = useMemo(() => {
     if (!myInfo) return [];
@@ -70,6 +97,36 @@ const resetPasswordForm = () => {
   }, [boards, myInfo]);
 
   const isKakaoUser = myInfo?.provider === "KAKAO";
+  const profileInitial = String(myInfo?.nickname || myInfo?.loginId || "F")
+    .trim()
+    .slice(0, 1)
+    .toUpperCase();
+  const latestBoard = myBoards[0];
+  const latestComment = comments[0];
+  const totalViews = myBoards.reduce(
+    (sum, board) => sum + Number(board.viewCount || 0),
+    0
+  );
+
+  const getPreviewText = (content, limit = 90) => {
+    const text = String(content || "").trim();
+
+    if (text.length <= limit) {
+      return text;
+    }
+
+    return `${text.slice(0, limit)}...`;
+  };
+
+  const formatCount = (value) => Number(value || 0).toLocaleString("ko-KR");
+
+  const moveToActivity = (tabName) => {
+    setActiveTab(tabName);
+    activitySectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const handleUpdateMyInfo = async () => {
   try {
@@ -156,7 +213,7 @@ const resetPasswordForm = () => {
     }
 
     const passwordRegex =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       await Swal.fire({
         icon: "error",
@@ -176,7 +233,7 @@ const resetPasswordForm = () => {
   return;
 }
 
-    const response = await api.put(
+    await api.put(
       "/api/users/me/password",
       {
         currentPassword,
@@ -309,141 +366,240 @@ const handleDeleteMyAccount = async () => {
       <Header myInfo={myInfo} />
 
       <main className="mypage-main">
-        <section className="mypage-profile-card">
-  <div className="mypage-profile-top">
-    <h2 className="mypage-title">마이페이지</h2>
+        <section className="mypage-hero">
+          <div className="mypage-hero-content">
+            <span className="mypage-kicker">MY FITBOARD</span>
+            <h2 className="mypage-title">
+              {myInfo ? `${myInfo.nickname}님의 활동 기록` : "마이페이지"}
+            </h2>
+            <p className="mypage-hero-desc">
+              작성한 글과 댓글을 한곳에서 확인하고, 계정 정보를 관리하세요.
+            </p>
+          </div>
 
-    <div className="mypage-profile-action-column">
-      {!isEditMode ? (
-        <button
-          className="mypage-edit-button"
-          onClick={() => setIsEditMode(true)}
-        >
-          닉네임 변경
-        </button>
-      ) : (
-        <div className="mypage-edit-action-group">
           <button
-            className="mypage-save-button"
-            onClick={handleUpdateMyInfo}
+            className="mypage-primary-action"
+            onClick={() => navigate("/boards/new")}
           >
-            저장
+            새 글 쓰기
           </button>
-          <button
-            className="mypage-cancel-button"
-            onClick={() => {
-              setIsEditMode(false);
-              setEditNickname(myInfo?.nickname || "");
-            }}
-          >
-            취소
-          </button>
-        </div>
-      )}
+        </section>
 
-      {!isKakaoUser && (
-  <>
-    {!isPasswordEditOpen ? (
-      <button
-        className="mypage-password-toggle-button"
-        onClick={() => {
-          setIsPasswordEditOpen(true);
-        }}
-      >
-        비밀번호 변경
-      </button>
-    ) : (
-      <button
-        className="mypage-password-close-button"
-        onClick={() => {
-          setIsPasswordEditOpen(false);
-          resetPasswordForm();
-        }}
-      >
-        비밀번호 변경 취소
-      </button>
-    )}
-  </>
-)}
-      <button
-  className="mypage-delete-button"
-  onClick={handleDeleteMyAccount}
->
-  회원 탈퇴
-</button>
-    </div>
-  </div>
+        {message && <p className="mypage-message">{message}</p>}
 
-  {myInfo ? (
-    <div className="mypage-profile-info">
-      <p><strong>아이디</strong> {myInfo.loginId}</p>
-      <p><strong>이메일</strong> {myInfo.email}</p>
+        <section className="mypage-overview">
+          <article className="mypage-profile-card">
+            <div className="mypage-profile-top">
+              <div className="mypage-profile-head">
+                <div className="mypage-avatar">{profileInitial}</div>
+                <div>
+                  <span className="mypage-kicker">프로필</span>
+                  <h3 className="mypage-profile-name">
+                    {myInfo?.nickname || "불러오는 중"}
+                  </h3>
+                </div>
+              </div>
 
-      {!isEditMode ? (
-        <p><strong>닉네임</strong> {myInfo.nickname}</p>
-      ) : (
-        <div className="mypage-edit-field">
-          <label className="mypage-edit-label">닉네임</label>
-          <input
-            className="mypage-edit-input"
-            type="text"
-            value={editNickname}
-            onChange={(e) => setEditNickname(e.target.value)}
-          />
-        </div>
-      )}
-    </div>
-  ) : (
-    <p>내 정보를 불러오는 중입니다.</p>
-  )}
+              <div className="mypage-profile-action-column">
+                {!isEditMode ? (
+                  <button
+                    className="mypage-edit-button"
+                    onClick={() => setIsEditMode(true)}
+                  >
+                    닉네임 변경
+                  </button>
+                ) : (
+                  <div className="mypage-edit-action-group">
+                    <button
+                      className="mypage-save-button"
+                      onClick={handleUpdateMyInfo}
+                    >
+                      저장
+                    </button>
+                    <button
+                      className="mypage-cancel-button"
+                      onClick={() => {
+                        setIsEditMode(false);
+                        setEditNickname(myInfo?.nickname || "");
+                      }}
+                    >
+                      취소
+                    </button>
+                  </div>
+                )}
 
-  {!isKakaoUser && isPasswordEditOpen && (
-    <div className="mypage-password-inline-area">
-      <div className="mypage-password-form">
-        <div className="mypage-edit-field">
-          <label className="mypage-edit-label">현재 비밀번호</label>
-          <input
-            className="mypage-edit-input"
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-        </div>
+                {!isKakaoUser && (
+                  <>
+                    {!isPasswordEditOpen ? (
+                      <button
+                        className="mypage-password-toggle-button"
+                        onClick={() => {
+                          setIsPasswordEditOpen(true);
+                        }}
+                      >
+                        비밀번호 변경
+                      </button>
+                    ) : (
+                      <button
+                        className="mypage-password-close-button"
+                        onClick={() => {
+                          setIsPasswordEditOpen(false);
+                          resetPasswordForm();
+                        }}
+                      >
+                        비밀번호 변경 취소
+                      </button>
+                    )}
+                  </>
+                )}
+                <button
+                  className="mypage-delete-button"
+                  onClick={handleDeleteMyAccount}
+                >
+                  회원 탈퇴
+                </button>
+              </div>
+            </div>
 
-        <div className="mypage-edit-field">
-          <label className="mypage-edit-label">새 비밀번호</label>
-          <input
-            className="mypage-edit-input"
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
+            {myInfo ? (
+              <div className="mypage-profile-info">
+                <div className="mypage-info-row">
+                  <span>아이디</span>
+                  <strong>{myInfo.loginId}</strong>
+                </div>
+                <div className="mypage-info-row">
+                  <span>이메일</span>
+                  <strong>{myInfo.email}</strong>
+                </div>
 
-        <div className="mypage-edit-field">
-          <label className="mypage-edit-label">새 비밀번호 확인</label>
-          <input
-            className="mypage-edit-input"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
+                {!isEditMode ? (
+                  <div className="mypage-info-row">
+                    <span>닉네임</span>
+                    <strong>{myInfo.nickname}</strong>
+                  </div>
+                ) : (
+                  <div className="mypage-edit-field">
+                    <label className="mypage-edit-label">닉네임</label>
+                    <input
+                      className="mypage-edit-input"
+                      type="text"
+                      value={editNickname}
+                      onChange={(e) => setEditNickname(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="mypage-loading">내 정보를 불러오는 중입니다.</p>
+            )}
 
-        <button
-          className="mypage-password-button"
-          onClick={handleUpdatePassword}
-        >
-          저장
-        </button>
-      </div>
-    </div>
-  )}
-</section>
+            {!isKakaoUser && isPasswordEditOpen && (
+              <div className="mypage-password-inline-area">
+                <div className="mypage-password-form">
+                  <div className="mypage-edit-field">
+                    <label className="mypage-edit-label">현재 비밀번호</label>
+                    <input
+                      className="mypage-edit-input"
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                  </div>
 
-        <section className="mypage-board-section">
+                  <div className="mypage-edit-field">
+                    <label className="mypage-edit-label">새 비밀번호</label>
+                    <input
+                      className="mypage-edit-input"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mypage-edit-field">
+                    <label className="mypage-edit-label">새 비밀번호 확인</label>
+                    <input
+                      className="mypage-edit-input"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    className="mypage-password-button"
+                    onClick={handleUpdatePassword}
+                  >
+                    저장
+                  </button>
+                </div>
+              </div>
+            )}
+          </article>
+
+          <div className="mypage-stat-grid">
+            <button
+              type="button"
+              className="mypage-stat-card mypage-stat-button"
+              onClick={() => moveToActivity("boards")}
+            >
+              <span>작성한 글</span>
+              <strong>{formatCount(myBoards.length)}</strong>
+              <small>내 게시글 보기</small>
+            </button>
+            <button
+              type="button"
+              className="mypage-stat-card mypage-stat-button"
+              onClick={() => moveToActivity("comments")}
+            >
+              <span>작성한 댓글</span>
+              <strong>{formatCount(comments.length)}</strong>
+              <small>내 댓글 보기</small>
+            </button>
+            <article className="mypage-stat-card">
+              <span>누적 조회수</span>
+              <strong>{formatCount(totalViews)}</strong>
+              <small>내 글 전체 기준</small>
+            </article>
+          </div>
+        </section>
+
+        <section className="mypage-highlight-grid">
+          <article className="mypage-highlight-card">
+            <span className="mypage-kicker">최근 게시글</span>
+            {latestBoard ? (
+              <button
+                className="mypage-highlight-link"
+                onClick={() => navigate(`/boards/${latestBoard.id}`)}
+              >
+                {latestBoard.title}
+              </button>
+            ) : (
+              <p>아직 작성한 게시글이 없습니다.</p>
+            )}
+          </article>
+
+          <article className="mypage-highlight-card">
+            <span className="mypage-kicker">최근 댓글</span>
+            {latestComment ? (
+              <button
+                className="mypage-highlight-link"
+                onClick={() => navigate(`/boards/${latestComment.boardId}`)}
+              >
+                {getPreviewText(latestComment.content, 54)}
+              </button>
+            ) : (
+              <p>아직 작성한 댓글이 없습니다.</p>
+            )}
+          </article>
+        </section>
+
+        <section className="mypage-board-section" ref={activitySectionRef}>
           <div className="mypage-board-top">
-            <h3 className="mypage-board-title">내 활동</h3>
+            <div>
+              <span className="mypage-kicker">활동 내역</span>
+              <h3 className="mypage-board-title">내가 남긴 이야기</h3>
+            </div>
           </div>
 
           <div className="mypage-tab-group">
@@ -481,7 +637,19 @@ const handleDeleteMyAccount = async () => {
                       </div>
 
                       <h4 className="mypage-board-card-title">{board.title}</h4>
-                      <p className="mypage-board-card-content">{board.content}</p>
+                      {String(board.imageUrl || "").trim() && (
+                        <div className="mypage-board-thumbnail">
+                          <img
+                            src={`${API_BASE_URL}${String(
+                              board.imageUrl
+                            ).trim()}`}
+                            alt="게시글 첨부 이미지"
+                          />
+                        </div>
+                      )}
+                      <p className="mypage-board-card-content">
+                        {getPreviewText(board.content)}
+                      </p>
 
                       <div className="mypage-board-meta">
                         <span>조회수 {board.viewCount}</span>
@@ -523,6 +691,7 @@ const handleDeleteMyAccount = async () => {
           )}
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -1,41 +1,250 @@
 .mypage {
   min-height: 100vh;
-  background: #f6f7f9;
+  background:
+    linear-gradient(180deg, rgba(231, 248, 241, 0.9) 0, rgba(247, 249, 252, 0.98) 320px),
+    #f7f9fc;
   padding-bottom: 60px;
 }
 
 .mypage-main {
   max-width: 1100px;
-  margin: 32px auto 0;
-  padding: 0 24px;
+  margin: 0 auto;
+  padding: 32px 24px 0;
   display: grid;
-  gap: 20px;
+  gap: 18px;
 }
 
-.mypage-profile-card,
-.mypage-board-section {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+.mypage-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  padding: 10px 0 12px;
+}
+
+.mypage-kicker {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: #12805d;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .mypage-title {
-  margin: 0 0 20px;
-  font-size: 28px;
+  margin: 0;
   color: #111827;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.mypage-hero-desc {
+  margin: 8px 0 0;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.mypage-primary-action {
+  height: 46px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 8px;
+  background: #12805d;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(18, 128, 93, 0.2);
+  white-space: nowrap;
+}
+
+.mypage-primary-action:hover {
+  background: #0f6f51;
+}
+
+.mypage-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.9fr);
+  gap: 14px;
+}
+
+.mypage-profile-card,
+.mypage-board-section,
+.mypage-highlight-card,
+.mypage-stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.06);
+}
+
+.mypage-profile-card {
+  padding: 22px;
+}
+
+.mypage-profile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.mypage-profile-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.mypage-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 18px;
+  background: #12805d;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 900;
+  box-shadow: 0 10px 22px rgba(18, 128, 93, 0.18);
+}
+
+.mypage-profile-name {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.mypage-profile-action-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 .mypage-profile-info {
   display: grid;
-  gap: 12px;
-  color: #374151;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
-.mypage-profile-info p {
-  margin: 0;
+.mypage-info-row {
+  min-height: 74px;
+  padding: 14px;
+  border: 1px solid #edf2f7;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.mypage-info-row span {
+  display: block;
+  margin-bottom: 6px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mypage-info-row strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #111827;
   font-size: 15px;
+}
+
+.mypage-stat-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.mypage-stat-card {
+  padding: 18px;
+  text-align: left;
+}
+
+.mypage-stat-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mypage-stat-card strong {
+  display: block;
+  color: #111827;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.mypage-stat-card small {
+  display: block;
+  margin-top: 10px;
+  color: #12805d;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mypage-stat-button {
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mypage-stat-button:hover,
+.mypage-stat-button:focus-visible {
+  border-color: #12805d;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.1);
+}
+
+.mypage-stat-button:focus-visible {
+  outline: 3px solid rgba(18, 128, 93, 0.16);
+  outline-offset: 2px;
+}
+
+.mypage-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mypage-highlight-card {
+  min-height: 116px;
+  padding: 18px;
+}
+
+.mypage-highlight-card p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.mypage-highlight-link {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #111827;
+  cursor: pointer;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.mypage-highlight-link:hover {
+  color: #12805d;
+}
+
+.mypage-board-section {
+  padding: 22px;
 }
 
 .mypage-board-top {
@@ -48,71 +257,65 @@
 
 .mypage-board-title {
   margin: 0;
-  font-size: 22px;
   color: #111827;
-}
-
-.mypage-board-count {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.mypage-message {
-  margin-bottom: 16px;
-  color: #dc2626;
-}
-
-.mypage-empty {
-  padding: 32px 20px;
-  text-align: center;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  color: #6b7280;
-  background: #fbfdff;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .mypage-tab-group {
   display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .mypage-tab {
   height: 40px;
   padding: 0 16px;
   border: 1px solid #d1d5db;
-  border-radius: 10px;
+  border-radius: 999px;
   background: #ffffff;
   color: #374151;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
 }
 
+.mypage-tab:hover {
+  border-color: #12805d;
+  color: #12805d;
+}
+
 .mypage-tab.active {
-  background: #35c5f0;
-  border-color: #35c5f0;
+  background: #12805d;
+  border-color: #12805d;
   color: #ffffff;
 }
 
 .mypage-board-list,
 .mypage-comment-list {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .mypage-board-card,
 .mypage-comment-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  display: grid;
+  gap: 10px;
   padding: 18px;
-  background: #fbfdff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .mypage-board-card:hover,
 .mypage-comment-card:hover {
-  background: #f8fbff;
+  border-color: #12805d;
+  background: #fbfffd;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
 }
 
 .mypage-board-card-top,
@@ -121,268 +324,96 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 10px;
 }
 
 .mypage-category {
   display: inline-block;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #e0f7ff;
-  color: #0891b2;
+  background: #e5f7ef;
+  color: #12805d;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .mypage-date {
-  font-size: 13px;
   color: #9ca3af;
+  font-size: 13px;
   white-space: nowrap;
 }
 
 .mypage-board-card-title {
-  margin: 0 0 8px;
-  font-size: 20px;
+  margin: 0;
   color: #111827;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.mypage-board-card:hover .mypage-board-card-title {
+  color: #12805d;
+}
+
+.mypage-board-thumbnail {
+  overflow: hidden;
+  height: 170px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.mypage-board-thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .mypage-board-card-content,
 .mypage-comment-content {
-  margin: 0 0 12px;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0;
   color: #4b5563;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .mypage-board-meta {
-  font-size: 14px;
   color: #6b7280;
+  font-size: 14px;
 }
 
 .mypage-comment-board {
-  font-weight: 700;
+  overflow: hidden;
   color: #111827;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.mypage-profile-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+.mypage-empty {
+  padding: 38px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #6b7280;
+  text-align: center;
 }
 
-.mypage-edit-button,
-.mypage-save-button,
-.mypage-cancel-button {
-  height: 40px;
-  padding: 0 14px;
-  border: none;
-  border-radius: 10px;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mypage-edit-button,
-.mypage-save-button {
-  background: #35c5f0;
-}
-
-.mypage-cancel-button {
-  background: #9ca3af;
-}
-
-.mypage-edit-action-group {
-  display: flex;
-  gap: 8px;
-}
-
-.mypage-edit-field {
-  display: grid;
-  gap: 8px;
-}
-
-.mypage-edit-label {
-  font-size: 14px;
-  font-weight: 700;
-  color: #374151;
-}
-
-.mypage-edit-input {
-  width: 100%;
-  max-width: 320px;
-  height: 42px;
-  padding: 0 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background: #ffffff;
-  outline: none;
-  font: inherit;
-}
-
-.mypage-edit-input:focus {
-  border-color: #35c5f0;
-}
-
-.mypage-password-title {
+.mypage-message {
   margin: 0;
-  font-size: 22px;
-  color: #111827;
+  padding: 14px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
 }
 
-.mypage-password-form {
-  display: grid;
-  gap: 14px;
-}
-
-.mypage-password-button {
-  width: fit-content;
-  height: 40px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 10px;
-  background: #111827;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mypage-password-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.mypage-password-toggle-button,
-.mypage-password-close-button {
-  height: 40px;
-  padding: 0 14px;
-  border: none;
-  border-radius: 10px;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mypage-password-toggle-button {
-  background: #35c5f0;
-}
-
-.mypage-password-close-button {
-  background: #9ca3af;
-}
-
-.mypage-password-guide {
+.mypage-loading {
   margin: 0;
   color: #6b7280;
-  font-size: 14px;
-}
-
-.mypage-profile-action-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.mypage-password-inline-area {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.mypage-password-toggle-button,
-.mypage-password-close-button {
-  height: 40px;
-  padding: 0 14px;
-  border: none;
-  border-radius: 10px;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mypage-password-toggle-button {
-  background: #111827;
-}
-
-.mypage-password-close-button {
-  background: #9ca3af;
-}
-
-.mypage-delete-button {
-  height: 40px;
-  padding: 0 14px;
-  border: none;
-  border-radius: 10px;
-  background: #ef4444;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mypage-delete-button:hover {
-  opacity: 0.95;
-}
-
-.mypage {
-  min-height: 100vh;
-  background: #f6f7f9;
-  padding-bottom: 60px;
-}
-
-.mypage-main {
-  max-width: 1100px;
-  margin: 32px auto 0;
-  padding: 0 24px;
-  display: grid;
-  gap: 20px;
-}
-
-.mypage-profile-card,
-.mypage-board-section {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 24px;
-  padding: 26px;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
-}
-
-.mypage-profile-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-.mypage-title {
-  margin: 0;
-  font-size: 30px;
-  font-weight: 800;
-  color: #111827;
-  letter-spacing: -0.02em;
-}
-
-.mypage-profile-action-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.mypage-profile-info {
-  display: grid;
-  gap: 12px;
-  color: #374151;
-}
-
-.mypage-profile-info p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
 }
 
 .mypage-edit-field {
@@ -391,9 +422,9 @@
 }
 
 .mypage-edit-label {
-  font-size: 14px;
-  font-weight: 700;
   color: #374151;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .mypage-edit-input {
@@ -402,16 +433,16 @@
   height: 44px;
   padding: 0 14px;
   border: 1px solid #d1d5db;
-  border-radius: 12px;
+  border-radius: 8px;
   background: #ffffff;
+  color: #111827;
   outline: none;
   font: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .mypage-edit-input:focus {
-  border-color: #35c5f0;
-  box-shadow: 0 0 0 4px rgba(53, 197, 240, 0.12);
+  border-color: #12805d;
+  box-shadow: 0 0 0 4px rgba(18, 128, 93, 0.12);
 }
 
 .mypage-edit-button,
@@ -421,18 +452,24 @@
 .mypage-password-close-button,
 .mypage-password-button,
 .mypage-delete-button {
-  height: 40px;
+  height: 38px;
   padding: 0 14px;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .mypage-edit-button,
 .mypage-save-button {
-  background: #35c5f0;
+  background: #12805d;
+}
+
+.mypage-edit-button:hover,
+.mypage-save-button:hover {
+  background: #0f6f51;
 }
 
 .mypage-cancel-button,
@@ -452,11 +489,9 @@
 .mypage-delete-button:hover,
 .mypage-password-toggle-button:hover,
 .mypage-password-button:hover,
-.mypage-edit-button:hover,
-.mypage-save-button:hover,
 .mypage-cancel-button:hover,
 .mypage-password-close-button:hover {
-  opacity: 0.96;
+  opacity: 0.94;
 }
 
 .mypage-edit-action-group {
@@ -465,159 +500,61 @@
 }
 
 .mypage-password-inline-area {
-  margin-top: 22px;
-  padding-top: 22px;
+  margin-top: 20px;
+  padding-top: 20px;
   border-top: 1px solid #e5e7eb;
 }
 
 .mypage-password-form {
   display: grid;
-  gap: 14px;
   max-width: 420px;
-}
-
-.mypage-board-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.mypage-board-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 800;
-  color: #111827;
-}
-
-.mypage-tab-group {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-
-.mypage-tab {
-  height: 40px;
-  padding: 0 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #374151;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mypage-tab.active {
-  background: #35c5f0;
-  border-color: #35c5f0;
-  color: #ffffff;
-}
-
-.mypage-board-list,
-.mypage-comment-list {
-  display: grid;
   gap: 14px;
 }
 
-.mypage-board-card,
-.mypage-comment-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 18px;
-  background: #fbfdff;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.mypage-board-card:hover,
-.mypage-comment-card:hover {
-  background: #f8fbff;
-  transform: translateY(-1px);
-}
-
-.mypage-board-card-top,
-.mypage-comment-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.mypage-category {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #e0f7ff;
-  color: #0891b2;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.mypage-date {
-  font-size: 13px;
-  color: #9ca3af;
-  white-space: nowrap;
-}
-
-.mypage-board-card-title {
-  margin: 0 0 8px;
-  font-size: 20px;
-  font-weight: 800;
-  color: #111827;
-}
-
-.mypage-board-card-content,
-.mypage-comment-content {
-  margin: 0 0 12px;
-  color: #4b5563;
-  line-height: 1.7;
-}
-
-.mypage-comment-board {
-  font-weight: 700;
-  color: #111827;
-}
-
-.mypage-board-meta {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.mypage-empty {
-  padding: 34px 20px;
-  text-align: center;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  color: #6b7280;
-  background: #fbfdff;
-}
-
-@media (max-width: 768px) {
-  .mypage-main {
-    padding: 0 16px;
+@media (max-width: 900px) {
+  .mypage-overview,
+  .mypage-highlight-grid {
+    grid-template-columns: 1fr;
   }
 
+  .mypage-profile-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .mypage-main {
+    padding: 24px 16px 0;
+  }
+
+  .mypage-hero,
   .mypage-profile-top {
-    flex-direction: column;
     align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mypage-title {
+    font-size: 28px;
+  }
+
+  .mypage-primary-action,
+  .mypage-profile-action-column,
+  .mypage-edit-action-group,
+  .mypage-edit-action-group button {
+    width: 100%;
   }
 
   .mypage-profile-action-column {
     align-items: stretch;
   }
 
-  .mypage-edit-action-group {
-    width: 100%;
+  .mypage-board-card-top,
+  .mypage-comment-top {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .mypage-edit-action-group button {
-    flex: 1;
-  }
-
-  .mypage-password-form {
-    max-width: none;
+  .mypage-date {
+    white-space: normal;
   }
 }

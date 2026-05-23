@@ -17,6 +17,7 @@ public class BoardResponse {
     private final String nickname;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final String imageUrl;
 
     public BoardResponse(Board board) {
         this.id = board.getId();
@@ -28,6 +29,7 @@ public class BoardResponse {
         this.nickname = board.getUser().getNickname();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
+        this.imageUrl = board.getImageUrl();
     }
 }
 

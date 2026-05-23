@@ -46,6 +46,10 @@ public class Board {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    // 이미지 Url
+    @Column(length = 500)
+    private String imageUrl;
+
     public Board(String title, String content, String category, User user) {
         this.title = title;
         this.content = content;
@@ -61,6 +65,10 @@ public class Board {
         this.content = content;
         this.category = category;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void increaseViewCount() {

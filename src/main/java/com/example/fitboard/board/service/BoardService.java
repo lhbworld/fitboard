@@ -42,6 +42,8 @@ public class BoardService {
                 user
         );
 
+        board.changeImageUrl(request.getImageUrl());
+
         Board savedBoard = boardRepository.save(board);
         return new BoardResponse(savedBoard);
     }
@@ -75,6 +77,8 @@ public class BoardService {
                 request.getContent(),
                 request.getCategory()
         );
+
+        board.changeImageUrl(request.getImageUrl());
 
         return new BoardResponse(board);
     }

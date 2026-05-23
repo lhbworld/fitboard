@@ -47,8 +47,8 @@
   height: 40px;
   padding: 0 16px;
   border: none;
-  border-radius: 10px;
-  background: #35c5f0;
+  border-radius: 8px;
+  background: #12805d;
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
@@ -57,9 +57,26 @@
 .app-login-button:hover,
 .app-logout-button:hover,
 .app-mypage-button:hover {
-  opacity: 0.95;
+  background: #0f6f51;
 }
 
 .app-logout-button {
   background: #ef4444;
+}
+
+.app-logout-button:hover {
+  background: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .app-header-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .app-header-right {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }

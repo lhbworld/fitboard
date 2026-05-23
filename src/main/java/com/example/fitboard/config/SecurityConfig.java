@@ -1,10 +1,9 @@
-package com.example.fitboard.global.config;
+package com.example.fitboard.config;
 
 import com.example.fitboard.global.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -42,7 +41,8 @@ public class SecurityConfig {
                                 "/error",
                                 "/api/users/signup",
                                 "/api/users/login",
-                                "/api/auth/kakao/**"
+                                "/api/auth/kakao/**",
+                                "/uploads/images/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/boards/**", "/api/comments/**").permitAll()
                         .requestMatchers("/api/users/me").authenticated()

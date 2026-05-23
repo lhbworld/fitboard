@@ -18,4 +18,6 @@ public class BoardUpdateRequest {
 
     @NotBlank(message = "카테고리는 필수입니다.")
     private String category;
+
+    private String imageUrl;
 }

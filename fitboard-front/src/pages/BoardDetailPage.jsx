@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import "./BoardDetailPage.css";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Swal from "sweetalert2";
 
@@ -32,6 +33,7 @@ function BoardDetailPage() {
 };
   const { boardId } = useParams();
   const navigate = useNavigate();
+  const API_BASE_URL = api.defaults.baseURL || "http://localhost:8081";
 
   const [board, setBoard] = useState(null);
   const [comments, setComments] = useState([]);
@@ -281,11 +283,13 @@ function BoardDetailPage() {
             <p>불러오는 중...</p>
           )}
         </div>
+        <Footer />
       </div>
     );
   }
 
   const isBoardOwner = myInfo && myInfo.id === board.userId;
+  const boardImageUrl = String(board.imageUrl || "").trim();
 
   return (
     <div className="detail-page">
@@ -327,6 +331,16 @@ function BoardDetailPage() {
               >
                 삭제
               </button>
+            </div>
+          )}
+
+          {boardImageUrl && (
+            <div className="detail-image-wrap">
+              <img
+                className="detail-image"
+                src={`${API_BASE_URL}${boardImageUrl}`}
+                alt="게시글 첨부 이미지"
+              />
             </div>
           )}
 
@@ -424,6 +438,7 @@ function BoardDetailPage() {
           )}
         </section>
       </div>
+      <Footer />
     </div>
   );
 }

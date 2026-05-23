@@ -33,7 +33,7 @@ function LoginPage() {
       });
 
       localStorage.setItem("accessToken", response.data.accessToken);
-      navigate("/boards");
+      navigate("/");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
@@ -55,7 +55,7 @@ function LoginPage() {
           <button
             type="button"
             className="login-brand"
-            onClick={() => navigate("/boards")}
+            onClick={() => navigate("/")}
           >
             fitboard
           </button>

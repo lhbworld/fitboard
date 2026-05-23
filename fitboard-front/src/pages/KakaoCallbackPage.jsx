@@ -12,7 +12,7 @@ function KakaoCallbackPage() {
 
       if (token) {
         localStorage.setItem("accessToken", token);
-        navigate("/boards", { replace: true });
+        navigate("/", { replace: true });
         return;
       }
 

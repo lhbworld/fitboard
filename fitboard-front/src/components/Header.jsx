@@ -12,7 +12,7 @@ function Header({ myInfo }) {
   return (
     <header className="app-header">
       <div className="app-header-inner">
-        <div className="app-logo-wrap" onClick={() => navigate("/boards")}>
+        <div className="app-logo-wrap" onClick={() => navigate("/")}>
           <h1 className="app-logo">fitboard</h1>
           <p className="app-subtitle">운동 정보 공유 커뮤니티</p>
         </div>
@@ -20,17 +20,17 @@ function Header({ myInfo }) {
         <div className="app-header-right">
           {myInfo ? (
             <>
-  <span className="app-user">{myInfo.nickname}님</span>
-  <button
-    className="app-mypage-button"
-    onClick={() => navigate("/mypage")}
-  >
-    마이페이지
-  </button>
-  <button className="app-logout-button" onClick={handleLogout}>
-    로그아웃
-  </button>
-</>
+              <span className="app-user">{myInfo.nickname}님</span>
+              <button
+                className="app-mypage-button"
+                onClick={() => navigate("/mypage")}
+              >
+                마이페이지
+              </button>
+              <button className="app-logout-button" onClick={handleLogout}>
+                로그아웃
+              </button>
+            </>
           ) : (
             <button
               className="app-login-button"
