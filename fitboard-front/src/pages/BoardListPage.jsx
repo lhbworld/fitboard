@@ -168,7 +168,7 @@ function BoardListPage() {
       title: "로그인 필요",
       text: "로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?",
       showCancelButton: true,
-      confirmButtonColor: "#35c5f0",
+      confirmButtonColor: "#12805d",
       cancelButtonColor: "#9ca3af",
       confirmButtonText: "로그인하러 가기",
       cancelButtonText: "취소",

@@ -21,7 +21,7 @@ function LoginPage() {
         icon: "warning",
         title: "입력 확인",
         text: "아이디와 비밀번호를 모두 입력해주십시오.",
-        confirmButtonColor: "#35c5f0",
+        confirmButtonColor: "#12805d",
       });
       return;
     }

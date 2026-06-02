@@ -27,7 +27,7 @@ api.interceptors.response.use(
           icon: "warning",
           title: "로그인 필요",
           text: "로그인 정보가 만료되었거나 유효하지 않습니다. 다시 로그인해주십시오.",
-          confirmButtonColor: "#35c5f0",
+          confirmButtonColor: "#12805d",
         });
 
         isAuthAlertOpen = false;

@@ -28,6 +28,7 @@
   font-size: 30px;
   color: #111827;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .board-section-desc {
@@ -91,6 +92,7 @@
   font-size: 20px;
   line-height: 1.35;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .board-search-state {
@@ -267,6 +269,7 @@
   font-size: 20px;
   line-height: 1.4;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .board-card:hover .board-title,

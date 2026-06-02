@@ -35,6 +35,7 @@
   font-weight: 800;
   line-height: 1.3;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .create-subtitle {

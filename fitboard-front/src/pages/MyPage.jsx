@@ -96,7 +96,10 @@ const resetPasswordForm = () => {
     return boards.filter((board) => board.userId === myInfo.id);
   }, [boards, myInfo]);
 
-  const isKakaoUser = myInfo?.provider === "KAKAO";
+  const provider = String(myInfo?.provider || "").toUpperCase();
+  const hasKakaoLoginId = String(myInfo?.loginId || "").startsWith("kakao_");
+  const isKakaoUser = hasKakaoLoginId || (!myInfo?.loginId && provider === "KAKAO");
+  const canChangePassword = Boolean(myInfo) && !isKakaoUser;
   const profileInitial = String(myInfo?.nickname || myInfo?.loginId || "F")
     .trim()
     .slice(0, 1)
@@ -142,7 +145,7 @@ const resetPasswordForm = () => {
         icon: "warning",
         title: "입력 확인",
         text: "닉네임을 입력해주십시오.",
-        confirmButtonColor: "#35c5f0",
+        confirmButtonColor: "#12805d",
       });
       return;
     }
@@ -164,7 +167,7 @@ const resetPasswordForm = () => {
       icon: "success",
       title: "수정 완료",
       text: "닉네임이 수정되었습니다.",
-      confirmButtonColor: "#35c5f0",
+      confirmButtonColor: "#12805d",
     });
   } catch (error) {
     console.error(error);
@@ -197,7 +200,7 @@ const resetPasswordForm = () => {
         icon: "warning",
         title: "입력 확인",
         text: "모든 비밀번호 항목을 입력해주십시오.",
-        confirmButtonColor: "#35c5f0",
+        confirmButtonColor: "#12805d",
       });
       return;
     }
@@ -250,7 +253,7 @@ const resetPasswordForm = () => {
   icon: "success",
   title: "변경 완료",
   text: "비밀번호가 변경되었습니다. 다시 로그인해주십시오.",
-  confirmButtonColor: "#35c5f0",
+  confirmButtonColor: "#12805d",
 });
 
 localStorage.removeItem("accessToken");
@@ -342,7 +345,7 @@ const handleDeleteMyAccount = async () => {
       icon: "success",
       title: "탈퇴 완료",
       text: response.data?.message || "회원 탈퇴가 완료되었습니다.",
-      confirmButtonColor: "#35c5f0",
+      confirmButtonColor: "#12805d",
     });
 
     navigate("/login");
@@ -428,7 +431,7 @@ const handleDeleteMyAccount = async () => {
                   </div>
                 )}
 
-                {!isKakaoUser && (
+                {canChangePassword && (
                   <>
                     {!isPasswordEditOpen ? (
                       <button
@@ -493,7 +496,7 @@ const handleDeleteMyAccount = async () => {
               <p className="mypage-loading">내 정보를 불러오는 중입니다.</p>
             )}
 
-            {!isKakaoUser && isPasswordEditOpen && (
+            {canChangePassword && isPasswordEditOpen && (
               <div className="mypage-password-inline-area">
                 <div className="mypage-password-form">
                   <div className="mypage-edit-field">

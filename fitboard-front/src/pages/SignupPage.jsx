@@ -20,7 +20,7 @@ function SignupPage() {
         icon: "warning",
         title: "입력 확인",
         text: "모든 항목을 입력해주십시오.",
-        confirmButtonColor: "#35c5f0",
+        confirmButtonColor: "#12805d",
       });
       return;
     }
@@ -37,7 +37,7 @@ function SignupPage() {
         icon: "success",
         title: "회원가입 완료",
         text: response.data?.message || "회원가입이 완료되었습니다. 로그인해주십시오.",
-        confirmButtonColor: "#35c5f0",
+        confirmButtonColor: "#12805d",
       });
 
       navigate("/login");
@@ -57,56 +57,90 @@ function SignupPage() {
 
   return (
     <div className="signup-page">
-      <div className="signup-card">
-        <h1 className="signup-logo">fitboard</h1>
-        <p className="signup-subtitle">회원가입</p>
-
-        <form onSubmit={handleSignup} className="signup-form">
-          <input
-            type="text"
-            placeholder="아이디"
-            value={loginId}
-            onChange={(e) => setLoginId(e.target.value)}
-            className="signup-input"
-            autoComplete="off"
-          />
-          <input
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="signup-input"
-            autoComplete="new-password"
-          />
-          <input
-            type="email"
-            placeholder="이메일"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="signup-input"
-            autoComplete="email"
-          />
-          <input
-            type="text"
-            placeholder="닉네임"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="signup-input"
-            autoComplete="off"
-          />
-
-          <button type="submit" className="signup-button">
-            회원가입
+      <div className="signup-shell">
+        <section className="signup-intro">
+          <button
+            type="button"
+            className="signup-brand"
+            onClick={() => navigate("/")}
+          >
+            fitboard
           </button>
-        </form>
+          <p className="signup-kicker">운동 정보 공유 커뮤니티</p>
+          <h1 className="signup-heading">나만의 운동 기록을 함께 나눠보세요</h1>
+          <p className="signup-description">
+            루틴, 식단, 질문을 기록하고 같은 목표를 가진 사람들과 이어집니다.
+          </p>
+        </section>
 
-        <button
-          type="button"
-          className="signup-secondary-button"
-          onClick={() => navigate("/login")}
-        >
-          로그인으로 돌아가기
-        </button>
+        <section className="signup-card">
+          <div className="signup-card-header">
+            <p className="signup-subtitle">회원가입</p>
+            <h2 className="signup-title">fitboard 시작하기</h2>
+          </div>
+
+          <form onSubmit={handleSignup} className="signup-form">
+            <label className="signup-field">
+              <span>아이디</span>
+              <input
+                type="text"
+                placeholder="아이디 입력"
+                value={loginId}
+                onChange={(e) => setLoginId(e.target.value)}
+                className="signup-input"
+                autoComplete="off"
+              />
+            </label>
+
+            <label className="signup-field">
+              <span>비밀번호</span>
+              <input
+                type="password"
+                placeholder="비밀번호 입력"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="signup-input"
+                autoComplete="new-password"
+              />
+            </label>
+
+            <label className="signup-field">
+              <span>이메일</span>
+              <input
+                type="email"
+                placeholder="이메일 입력"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="signup-input"
+                autoComplete="email"
+              />
+            </label>
+
+            <label className="signup-field">
+              <span>닉네임</span>
+              <input
+                type="text"
+                placeholder="닉네임 입력"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="signup-input"
+                autoComplete="off"
+              />
+            </label>
+
+            <button type="submit" className="signup-button">
+              회원가입
+            </button>
+          </form>
+
+          <button
+            type="button"
+            className="signup-secondary-button"
+            onClick={() => navigate("/login")}
+          >
+            로그인으로 돌아가기
+          </button>
+        </section>
       </div>
     </div>
   );

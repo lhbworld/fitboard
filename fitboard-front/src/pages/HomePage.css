@@ -68,6 +68,7 @@
   font-size: 42px;
   line-height: 1.35;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .home-nutrition-button {
@@ -176,6 +177,7 @@
   font-size: 38px;
   line-height: 1.25;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .home-hero p,
@@ -276,6 +278,7 @@
   font-size: 22px;
   line-height: 1.35;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .home-text-button {

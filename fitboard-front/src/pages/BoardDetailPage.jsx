@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import "./BoardDetailPage.css";
@@ -19,7 +19,7 @@ function BoardDetailPage() {
     title: "로그인 필요",
     text: "로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?",
     showCancelButton: true,
-    confirmButtonColor: "#35c5f0",
+    confirmButtonColor: "#12805d",
     cancelButtonColor: "#9ca3af",
     confirmButtonText: "로그인하러 가기",
     cancelButtonText: "취소",
@@ -48,7 +48,7 @@ function BoardDetailPage() {
 
   const getAccessToken = () => localStorage.getItem("accessToken");
 
-  const fetchMyInfo = async () => {
+  const fetchMyInfo = useCallback(async () => {
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -68,9 +68,9 @@ function BoardDetailPage() {
       console.error(error);
       setMyInfo(null);
     }
-  };
+  }, []);
 
-  const fetchBoardDetail = async () => {
+  const fetchBoardDetail = useCallback(async () => {
     try {
       const boardResponse = await api.get(`/api/boards/${boardId}`);
       setBoard(boardResponse.data);
@@ -81,16 +81,20 @@ function BoardDetailPage() {
       console.error(error);
       setMessage("게시글 상세 정보를 불러오는 중 오류가 발생했습니다.");
     }
-  };
+  }, [boardId]);
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     await fetchMyInfo();
     await fetchBoardDetail();
-  };
+  }, [fetchBoardDetail, fetchMyInfo]);
 
   useEffect(() => {
-    fetchAll();
-  }, [boardId]);
+    const loadData = async () => {
+      await fetchAll();
+    };
+
+    loadData();
+  }, [fetchAll]);
 
   const handleCommentSubmit = async () => {
   const canProceed = await requireLogin();
@@ -104,7 +108,7 @@ function BoardDetailPage() {
       icon: "warning",
       title: "입력 확인",
       text: "댓글 내용을 입력해주십시오.",
-      confirmButtonColor: "#35c5f0",
+      confirmButtonColor: "#12805d",
     });
     return;
   }
@@ -128,7 +132,7 @@ function BoardDetailPage() {
       icon: "success",
       title: "등록 완료",
       text: "댓글이 등록되었습니다.",
-      confirmButtonColor: "#35c5f0",
+      confirmButtonColor: "#12805d",
       timer: 1000,
       showConfirmButton: false,
     });
@@ -160,13 +164,32 @@ function BoardDetailPage() {
         return;
       }
 
-      const confirmed = window.confirm("정말 이 게시글을 삭제하시겠습니까?");
-      if (!confirmed) return;
+      const result = await Swal.fire({
+        icon: "warning",
+        title: "게시글 삭제",
+        text: "삭제한 게시글은 복구할 수 없습니다. 정말 삭제하시겠습니까?",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        cancelButtonColor: "#9ca3af",
+        confirmButtonText: "삭제하기",
+        cancelButtonText: "취소",
+      });
+
+      if (!result.isConfirmed) return;
 
       await api.delete(`/api/boards/${boardId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+      });
+
+      await Swal.fire({
+        icon: "success",
+        title: "삭제 완료",
+        text: "게시글이 삭제되었습니다.",
+        confirmButtonColor: "#12805d",
+        timer: 1000,
+        showConfirmButton: false,
       });
 
       navigate("/boards");
@@ -178,7 +201,12 @@ function BoardDetailPage() {
         error.message ||
         "게시글 삭제 중 오류가 발생했습니다.";
 
-      setMessage(errorMessage);
+      await Swal.fire({
+        icon: "error",
+        title: "삭제 실패",
+        text: errorMessage,
+        confirmButtonColor: "#ef4444",
+      });
     }
   };
 
@@ -242,8 +270,18 @@ function BoardDetailPage() {
         return;
       }
 
-      const confirmed = window.confirm("정말 이 댓글을 삭제하시겠습니까?");
-      if (!confirmed) return;
+      const result = await Swal.fire({
+        icon: "warning",
+        title: "댓글 삭제",
+        text: "삭제한 댓글은 복구할 수 없습니다. 정말 삭제하시겠습니까?",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        cancelButtonColor: "#9ca3af",
+        confirmButtonText: "삭제하기",
+        cancelButtonText: "취소",
+      });
+
+      if (!result.isConfirmed) return;
 
       await api.delete(`/api/comments/${commentId}`, {
         headers: {
@@ -251,7 +289,16 @@ function BoardDetailPage() {
         },
       });
 
-      setCommentMessage("댓글이 삭제되었습니다.");
+      setCommentMessage("");
+      await Swal.fire({
+        icon: "success",
+        title: "삭제 완료",
+        text: "댓글이 삭제되었습니다.",
+        confirmButtonColor: "#12805d",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+
       await fetchBoardDetail();
     } catch (error) {
       console.error(error);
@@ -261,7 +308,12 @@ function BoardDetailPage() {
         error.message ||
         "댓글 삭제 중 오류가 발생했습니다.";
 
-      setCommentMessage(errorMessage);
+      await Swal.fire({
+        icon: "error",
+        title: "삭제 실패",
+        text: errorMessage,
+        confirmButtonColor: "#ef4444",
+      });
     }
   };
 
@@ -290,31 +342,35 @@ function BoardDetailPage() {
 
   const isBoardOwner = myInfo && myInfo.id === board.userId;
   const boardImageUrl = String(board.imageUrl || "").trim();
+  const formattedDate = String(board.createdAt).replace("T", " ").slice(0, 16);
 
   return (
     <div className="detail-page">
       <Header myInfo={myInfo} />
-      <div className="detail-container">
-        <button
-          className="detail-back-button"
-          onClick={() => navigate("/boards")}
-        >
-          ← 목록으로
-        </button>
+      <main className="detail-container">
+        <section className="detail-hero">
+          <div>
+            <span className="detail-kicker">BOARD</span>
+            <h1 className="detail-title">{board.title}</h1>
+            <div className="detail-meta">
+              <span>작성자 {board.nickname}</span>
+              <span>조회수 {board.viewCount}</span>
+              <span>{formattedDate}</span>
+            </div>
+          </div>
+
+          <button
+            className="detail-back-button"
+            onClick={() => navigate("/boards")}
+          >
+            목록으로
+          </button>
+        </section>
 
         <article className="detail-card">
           <div className="detail-top">
             <span className="detail-category">{board.category}</span>
-            <span className="detail-date">
-              {String(board.createdAt).replace("T", " ").slice(0, 16)}
-            </span>
-          </div>
-
-          <h1 className="detail-title">{board.title}</h1>
-
-          <div className="detail-meta">
-            <span>작성자 {board.nickname}</span>
-            <span>조회수 {board.viewCount}</span>
+            <span className="detail-date">{formattedDate}</span>
           </div>
 
           {isBoardOwner && (
@@ -348,12 +404,17 @@ function BoardDetailPage() {
         </article>
 
         <section className="comment-section">
-          <h2 className="comment-title">댓글</h2>
+          <div className="comment-section-head">
+            <div>
+              <span className="detail-kicker">COMMENTS</span>
+              <h2 className="comment-title">댓글 {comments.length}</h2>
+            </div>
+          </div>
 
           <div className="comment-form">
             <textarea
               className="comment-textarea"
-              placeholder="댓글을 입력해주십시오."
+              placeholder="댓글을 입력해주세요."
               value={commentContent}
               onChange={(e) => setCommentContent(e.target.value)}
             />
@@ -364,6 +425,10 @@ function BoardDetailPage() {
               댓글 등록
             </button>
           </div>
+
+          {commentMessage && (
+            <p className="comment-message">{commentMessage}</p>
+          )}
 
           {comments.length === 0 ? (
             <div className="comment-empty">아직 댓글이 없습니다.</div>
@@ -437,7 +502,7 @@ function BoardDetailPage() {
             </div>
           )}
         </section>
-      </div>
+      </main>
       <Footer />
     </div>
   );
